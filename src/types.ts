@@ -60,8 +60,7 @@ export type RouteEntry = {
   status: "loading" | "ready" | "error";
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type Loader<T extends string> = (args: LoaderArgs<T>) => any;
+type Loader<T extends string> = (args: LoaderArgs<T>) => unknown;
 
 /**
  * A route definition with an async loader.
@@ -121,13 +120,19 @@ export type PathWithoutLoader<T extends string = string> = {
   loader?: undefined;
 };
 
+/** Component args for a route without a loader. */
+type StaticComponentArgs = { params: Params; url: URL };
+
+/** Component args for a route with a loader. */
+type LoadedComponentArgs = LoaderComponentArgs<string, unknown>;
+
 /** Type-erased route used internally by the {@link Router}. */
 export type Path = {
   url: string;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  component: (args: any) => React.ReactNode;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  loader?: (args: LoaderArgs) => any;
+  component: (
+    args: StaticComponentArgs | LoadedComponentArgs,
+  ) => React.ReactNode;
+  loader?: (args: LoaderArgs) => unknown;
 };
 
 /** Array of route definitions — use with `satisfies Routes` for type-safe route configs. */

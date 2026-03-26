@@ -30,8 +30,12 @@ describe("useRouter().url()", () => {
     params?: Record<string, string | number>;
   }) {
     const router = useRouter();
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const result = (router.url as any)(pattern, params);
+    const result = (
+      router.url as (
+        pattern: string,
+        params?: Record<string, string | number>,
+      ) => string
+    )(pattern, params);
     return <span data-testid="url-result">{result}</span>;
   }
 

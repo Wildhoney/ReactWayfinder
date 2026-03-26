@@ -391,8 +391,7 @@ export function Router({
             key={pathname}
             mode={pathname === activePathname ? "visible" : "hidden"}
           >
-            {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-            {(render as (args: any) => React.ReactNode)(args)}
+            {render(args)}
           </Activity>
         );
       })}
@@ -424,8 +423,8 @@ export function route<
   L extends (args: LoaderArgs<T>) => unknown,
 >(definition: PathWithLoader<T, L>): Path;
 export function route<T extends string>(definition: PathWithoutLoader<T>): Path;
-export function route(definition: Path): Path {
-  return definition;
+export function route(definition: PathWithLoader | PathWithoutLoader): Path {
+  return definition as Path;
 }
 
 export type {
