@@ -53,6 +53,8 @@
     "@testing-library/react": "^16.3.2",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
+    "@typescript-eslint/eslint-plugin": "^8.57.2",
+    "@typescript-eslint/parser": "^8.57.2",
     "@vitejs/plugin-react": "^6.0.1",
     "commit-and-tag-version": "^12.7.1",
     "eslint": "^10.1.0",
@@ -65,7 +67,7 @@
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
     "terser": "^5.46.1",
-    "typescript": "^6.0.2",
+    "typescript": "~5.9.3",
     "typescript-eslint": "^8.57.2",
     "vite": "^8.0.2",
     "vitest": "^4.1.1"

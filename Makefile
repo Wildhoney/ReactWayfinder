@@ -11,6 +11,7 @@ fmt:
 
 lint:
 	yarn lint
+	npx madge --circular src/index.tsx
 
 typecheck:
 	yarn typecheck
