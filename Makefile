@@ -1,9 +1,9 @@
-.PHONY: build example fmt lint typecheck unit integration checks
+.PHONY: build preview fmt lint typecheck unit integration circular fslint checks deploy
 
 build:
 	yarn build
 
-example:
+preview:
 	cd example && npx vite --open
 
 fmt:
@@ -21,4 +21,18 @@ unit:
 integration:
 	npx playwright test
 
-checks: fmt lint typecheck unit build
+circular:
+	npx madge --circular src/index.tsx
+
+fslint:
+	npx fslint --files=dist/**/*.js --limit-kb=10
+
+checks: fmt lint typecheck circular unit build fslint
+
+deploy:
+	yarn --force
+	make build
+	npx commit-and-tag-version
+	npm publish
+	git push
+	git push --tags
