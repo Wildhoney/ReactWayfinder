@@ -1,0 +1,71 @@
+{
+  "name": "react-wayfinder",
+  "version": "0.0.1",
+  "description": "React hooks for the Navigation API",
+  "type": "module",
+  "main": "dist/react-wayfinder.cjs",
+  "module": "dist/react-wayfinder.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/react-wayfinder.js",
+      "require": "./dist/react-wayfinder.cjs",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc && vite build",
+    "dev": "vite",
+    "fmt": "prettier --write src/ example/",
+    "lint": "eslint src/",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Wildhoney/ReactWayfinder.git"
+  },
+  "keywords": [
+    "react",
+    "navigation",
+    "navigation-api",
+    "router",
+    "wayfinder"
+  ],
+  "author": "Adam Timberlake",
+  "license": "MIT",
+  "peerDependencies": {
+    "react": ">=18",
+    "react-dom": ">=18"
+  },
+  "devDependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.1",
+    "@eslint/js": "^10.0.1",
+    "@playwright/test": "^1.58.2",
+    "@testing-library/dom": "^10.4.1",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.2",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^6.0.1",
+    "eslint": "^10.1.0",
+    "eslint-plugin-react-hooks": "^7.0.1",
+    "jsdom": "^29.0.1",
+    "prettier": "^3.8.1",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
+    "typescript": "^6.0.2",
+    "typescript-eslint": "^8.57.2",
+    "vite": "^8.0.2",
+    "vitest": "^4.1.1"
+  },
+  "dependencies": {
+    "@tanem/react-nprogress": "^6.0.3",
+    "antd": "^6.3.4"
+  }
+}

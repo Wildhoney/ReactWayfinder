@@ -1,0 +1,15 @@
+import Navigation from "../navigation";
+import { Page } from "./styles";
+
+/** Landing page with a welcome message. Has no loader so it renders instantly. */
+export default function Home() {
+  return (
+    <>
+      <Navigation />
+      <Page>
+        <h1>Home</h1>
+        <p>Welcome to the react-wayfinder example.</p>
+      </Page>
+    </>
+  );
+}

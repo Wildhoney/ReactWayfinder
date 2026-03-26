@@ -1,0 +1,531 @@
+[   29401ms] [ERROR] You are calling ReactDOMClient.createRoot() on a container that has already been passed to createRoot() before. Instead, call root.render() on the existing root instead if you want to update it. @ http://localhost:5174/@vite/client:509
+[   29530ms] NotFoundError: Failed to execute 'removeChild' on 'Node': The node to be removed is not a child of this node.
+    at removeChildFromContainer (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:10587:123)
+    at runWithFiberInDEV (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:850:66)
+    at commitDeletionEffectsOnFiber (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7105:7)
+    at recursivelyTraverseDeletionEffects (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7072:50)
+    at commitDeletionEffectsOnFiber (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7133:6)
+    at recursivelyTraverseDeletionEffects (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7072:50)
+    at commitDeletionEffectsOnFiber (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7133:6)
+    at recursivelyTraverseDeletionEffects (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7072:50)
+    at commitDeletionEffectsOnFiber (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7147:14)
+    at recursivelyTraverseDeletionEffects (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7072:50)
+[   29453ms] [WARNING] %s
+
+%s
+ An error occurred in the <div> component. Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://react.dev/link/error-boundaries to learn more about error boundaries. @ http://localhost:5174/@vite/client:509
+[   29532ms] NotFoundError: Failed to execute 'removeChild' on 'Node': The node to be removed is not a child of this node.
+    at removeChildFromContainer (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:10587:123)
+    at runWithFiberInDEV (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:850:66)
+    at commitDeletionEffectsOnFiber (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7105:7)
+    at recursivelyTraverseDeletionEffects (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7072:50)
+    at commitDeletionEffectsOnFiber (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7133:6)
+    at recursivelyTraverseDeletionEffects (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7072:50)
+    at commitDeletionEffectsOnFiber (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7133:6)
+    at recursivelyTraverseDeletionEffects (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7072:50)
+    at commitDeletionEffectsOnFiber (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7147:14)
+    at recursivelyTraverseDeletionEffects (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7072:50)
+[   29454ms] [WARNING] %s
+
+%s
+ An error occurred in the <a> component. Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://react.dev/link/error-boundaries to learn more about error boundaries. @ http://localhost:5174/@vite/client:509
+[   29534ms] NotFoundError: Failed to execute 'removeChild' on 'Node': The node to be removed is not a child of this node.
+    at removeChildFromContainer (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:10587:123)
+    at runWithFiberInDEV (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:850:66)
+    at commitDeletionEffectsOnFiber (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7105:7)
+    at recursivelyTraverseDeletionEffects (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7072:50)
+    at commitDeletionEffectsOnFiber (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7133:6)
+    at recursivelyTraverseDeletionEffects (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7072:50)
+    at commitDeletionEffectsOnFiber (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7133:6)
+    at recursivelyTraverseDeletionEffects (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7072:50)
+    at commitDeletionEffectsOnFiber (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7133:6)
+    at recursivelyTraverseDeletionEffects (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7072:50)
+[   29454ms] [WARNING] %s
+
+%s
+ An error occurred in the <nav> component. Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://react.dev/link/error-boundaries to learn more about error boundaries. @ http://localhost:5174/@vite/client:509
+[   29535ms] NotFoundError: Failed to execute 'removeChild' on 'Node': The node to be removed is not a child of this node.
+    at removeChildFromContainer (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:10587:123)
+    at runWithFiberInDEV (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:850:66)
+    at commitDeletionEffectsOnFiber (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7105:7)
+    at recursivelyTraverseDeletionEffects (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7072:50)
+    at commitDeletionEffectsOnFiber (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7133:6)
+    at recursivelyTraverseDeletionEffects (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7072:50)
+    at commitDeletionEffectsOnFiber (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7133:6)
+    at recursivelyTraverseDeletionEffects (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7072:50)
+    at commitDeletionEffectsOnFiber (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7133:6)
+    at recursivelyTraverseDeletionEffects (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7072:50)
+[   29454ms] [WARNING] %s
+
+%s
+ An error occurred in the <div> component. Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://react.dev/link/error-boundaries to learn more about error boundaries. @ http://localhost:5174/@vite/client:509
+[   29537ms] NotFoundError: Failed to execute 'removeChild' on 'Node': The node to be removed is not a child of this node.
+    at removeChildFromContainer (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:10587:123)
+    at runWithFiberInDEV (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:850:66)
+    at commitDeletionEffectsOnFiber (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7105:7)
+    at recursivelyTraverseDeletionEffects (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7072:50)
+    at commitDeletionEffectsOnFiber (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7133:6)
+    at recursivelyTraverseDeletionEffects (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7072:50)
+    at commitDeletionEffectsOnFiber (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7133:6)
+    at recursivelyTraverseDeletionEffects (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7072:50)
+    at commitDeletionEffectsOnFiber (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7144:6)
+    at recursivelyTraverseDeletionEffects (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7072:50)
+[   29454ms] [WARNING] %s
+
+%s
+ An error occurred in the <div> component. Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://react.dev/link/error-boundaries to learn more about error boundaries. @ http://localhost:5174/@vite/client:509
+[   29537ms] NotFoundError: Failed to execute 'removeChild' on 'Node': The node to be removed is not a child of this node.
+    at removeChildFromContainer (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:10587:123)
+    at runWithFiberInDEV (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:850:66)
+    at commitDeletionEffectsOnFiber (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7105:7)
+    at recursivelyTraverseDeletionEffects (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7072:50)
+    at commitDeletionEffectsOnFiber (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7133:6)
+    at recursivelyTraverseDeletionEffects (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7072:50)
+    at commitDeletionEffectsOnFiber (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7133:6)
+    at recursivelyTraverseDeletionEffects (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7072:50)
+    at commitDeletionEffectsOnFiber (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7133:6)
+    at recursivelyTraverseDeletionEffects (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7072:50)
+[   29454ms] [WARNING] %s
+
+%s
+ An error occurred in the <nav> component. Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://react.dev/link/error-boundaries to learn more about error boundaries. @ http://localhost:5174/@vite/client:509
+[   29538ms] NotFoundError: Failed to execute 'removeChild' on 'Node': The node to be removed is not a child of this node.
+    at removeChildFromContainer (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:10587:123)
+    at runWithFiberInDEV (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:850:66)
+    at commitDeletionEffectsOnFiber (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7105:7)
+    at recursivelyTraverseDeletionEffects (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7072:50)
+    at commitDeletionEffectsOnFiber (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7133:6)
+    at recursivelyTraverseDeletionEffects (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7072:50)
+    at commitDeletionEffectsOnFiber (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7133:6)
+    at recursivelyTraverseDeletionEffects (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7072:50)
+    at commitDeletionEffectsOnFiber (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7133:6)
+    at recursivelyTraverseDeletionEffects (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7072:50)
+[   29455ms] [WARNING] %s
+
+%s
+ An error occurred in the <div> component. Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://react.dev/link/error-boundaries to learn more about error boundaries. @ http://localhost:5174/@vite/client:509
+[   29539ms] NotFoundError: Failed to execute 'removeChild' on 'Node': The node to be removed is not a child of this node.
+    at removeChildFromContainer (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:10587:123)
+    at runWithFiberInDEV (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:850:66)
+    at commitDeletionEffectsOnFiber (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7105:7)
+    at recursivelyTraverseDeletionEffects (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7072:50)
+    at commitDeletionEffectsOnFiber (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7133:6)
+    at recursivelyTraverseDeletionEffects (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7072:50)
+    at commitDeletionEffectsOnFiber (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7133:6)
+    at recursivelyTraverseDeletionEffects (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7072:50)
+    at commitDeletionEffectsOnFiber (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7133:6)
+    at recursivelyTraverseDeletionEffects (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7072:50)
+[   29455ms] [WARNING] %s
+
+%s
+ An error occurred in the <div> component. Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://react.dev/link/error-boundaries to learn more about error boundaries. @ http://localhost:5174/@vite/client:509
+[   30576ms] [ERROR] You are calling ReactDOMClient.createRoot() on a container that has already been passed to createRoot() before. Instead, call root.render() on the existing root instead if you want to update it. @ http://localhost:5174/@vite/client:509
+[   30603ms] NotFoundError: Failed to execute 'removeChild' on 'Node': The node to be removed is not a child of this node.
+    at removeChildFromContainer (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:10587:123)
+    at runWithFiberInDEV (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:850:66)
+    at commitDeletionEffectsOnFiber (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7105:7)
+    at recursivelyTraverseDeletionEffects (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7072:50)
+    at commitDeletionEffectsOnFiber (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7133:6)
+    at recursivelyTraverseDeletionEffects (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7072:50)
+    at commitDeletionEffectsOnFiber (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7133:6)
+    at recursivelyTraverseDeletionEffects (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7072:50)
+    at commitDeletionEffectsOnFiber (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7147:14)
+    at recursivelyTraverseDeletionEffects (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7072:50)
+[   30601ms] [WARNING] %s
+
+%s
+ An error occurred in the <div> component. Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://react.dev/link/error-boundaries to learn more about error boundaries. @ http://localhost:5174/@vite/client:509
+[   30606ms] NotFoundError: Failed to execute 'removeChild' on 'Node': The node to be removed is not a child of this node.
+    at removeChildFromContainer (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:10587:123)
+    at runWithFiberInDEV (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:850:66)
+    at commitDeletionEffectsOnFiber (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7105:7)
+    at recursivelyTraverseDeletionEffects (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7072:50)
+    at commitDeletionEffectsOnFiber (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7133:6)
+    at recursivelyTraverseDeletionEffects (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7072:50)
+    at commitDeletionEffectsOnFiber (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7133:6)
+    at recursivelyTraverseDeletionEffects (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7072:50)
+    at commitDeletionEffectsOnFiber (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7147:14)
+    at recursivelyTraverseDeletionEffects (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7072:50)
+[   30602ms] [WARNING] %s
+
+%s
+ An error occurred in the <a> component. Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://react.dev/link/error-boundaries to learn more about error boundaries. @ http://localhost:5174/@vite/client:509
+[   30608ms] NotFoundError: Failed to execute 'removeChild' on 'Node': The node to be removed is not a child of this node.
+    at removeChildFromContainer (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:10587:123)
+    at runWithFiberInDEV (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:850:66)
+    at commitDeletionEffectsOnFiber (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7105:7)
+    at recursivelyTraverseDeletionEffects (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7072:50)
+    at commitDeletionEffectsOnFiber (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7133:6)
+    at recursivelyTraverseDeletionEffects (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7072:50)
+    at commitDeletionEffectsOnFiber (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7133:6)
+    at recursivelyTraverseDeletionEffects (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7072:50)
+    at commitDeletionEffectsOnFiber (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7133:6)
+    at recursivelyTraverseDeletionEffects (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7072:50)
+[   30602ms] [WARNING] %s
+
+%s
+ An error occurred in the <nav> component. Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://react.dev/link/error-boundaries to learn more about error boundaries. @ http://localhost:5174/@vite/client:509
+[   30620ms] NotFoundError: Failed to execute 'removeChild' on 'Node': The node to be removed is not a child of this node.
+    at removeChildFromContainer (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:10587:123)
+    at runWithFiberInDEV (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:850:66)
+    at commitDeletionEffectsOnFiber (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7105:7)
+    at recursivelyTraverseDeletionEffects (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7072:50)
+    at commitDeletionEffectsOnFiber (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7133:6)
+    at recursivelyTraverseDeletionEffects (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7072:50)
+    at commitDeletionEffectsOnFiber (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7133:6)
+    at recursivelyTraverseDeletionEffects (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7072:50)
+    at commitDeletionEffectsOnFiber (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7133:6)
+    at recursivelyTraverseDeletionEffects (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7072:50)
+[   30602ms] [WARNING] %s
+
+%s
+ An error occurred in the <div> component. Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://react.dev/link/error-boundaries to learn more about error boundaries. @ http://localhost:5174/@vite/client:509
+[   30623ms] NotFoundError: Failed to execute 'removeChild' on 'Node': The node to be removed is not a child of this node.
+    at removeChildFromContainer (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:10587:123)
+    at runWithFiberInDEV (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:850:66)
+    at commitDeletionEffectsOnFiber (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7105:7)
+    at recursivelyTraverseDeletionEffects (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7072:50)
+    at commitDeletionEffectsOnFiber (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7133:6)
+    at recursivelyTraverseDeletionEffects (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7072:50)
+    at commitDeletionEffectsOnFiber (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7133:6)
+    at recursivelyTraverseDeletionEffects (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7072:50)
+    at commitDeletionEffectsOnFiber (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7144:6)
+    at recursivelyTraverseDeletionEffects (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7072:50)
+[   30602ms] [WARNING] %s
+
+%s
+ An error occurred in the <div> component. Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://react.dev/link/error-boundaries to learn more about error boundaries. @ http://localhost:5174/@vite/client:509
+[   33870ms] NotFoundError: Failed to execute 'removeChild' on 'Node': The node to be removed is not a child of this node.
+    at removeChildFromContainer (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:10587:123)
+    at runWithFiberInDEV (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:850:66)
+    at commitDeletionEffectsOnFiber (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7105:7)
+    at recursivelyTraverseDeletionEffects (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7072:50)
+    at commitDeletionEffectsOnFiber (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7133:6)
+    at recursivelyTraverseDeletionEffects (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7072:50)
+    at commitDeletionEffectsOnFiber (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7133:6)
+    at recursivelyTraverseDeletionEffects (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7072:50)
+    at commitDeletionEffectsOnFiber (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7133:6)
+    at recursivelyTraverseMutationEffects (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7222:5)
+[   33868ms] [WARNING] %s
+
+%s
+ An error occurred in the <nav> component. Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://react.dev/link/error-boundaries to learn more about error boundaries. @ http://localhost:5174/@vite/client:509
+[   33871ms] NotFoundError: Failed to execute 'removeChild' on 'Node': The node to be removed is not a child of this node.
+    at removeChildFromContainer (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:10587:123)
+    at runWithFiberInDEV (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:850:66)
+    at commitDeletionEffectsOnFiber (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7105:7)
+    at recursivelyTraverseDeletionEffects (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7072:50)
+    at commitDeletionEffectsOnFiber (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7133:6)
+    at recursivelyTraverseDeletionEffects (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7072:50)
+    at commitDeletionEffectsOnFiber (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7133:6)
+    at recursivelyTraverseDeletionEffects (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7072:50)
+    at commitDeletionEffectsOnFiber (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7133:6)
+    at recursivelyTraverseMutationEffects (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7222:5)
+[   33869ms] [WARNING] %s
+
+%s
+ An error occurred in the <div> component. Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://react.dev/link/error-boundaries to learn more about error boundaries. @ http://localhost:5174/@vite/client:509
+[   33872ms] NotFoundError: Failed to execute 'removeChild' on 'Node': The node to be removed is not a child of this node.
+    at removeChildFromContainer (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:10587:123)
+    at runWithFiberInDEV (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:850:66)
+    at commitDeletionEffectsOnFiber (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7105:7)
+    at recursivelyTraverseDeletionEffects (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7072:50)
+    at commitDeletionEffectsOnFiber (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7133:6)
+    at recursivelyTraverseDeletionEffects (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7072:50)
+    at commitDeletionEffectsOnFiber (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7133:6)
+    at recursivelyTraverseMutationEffects (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7222:5)
+    at commitMutationEffectsOnFiber (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7392:6)
+    at recursivelyTraverseMutationEffects (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7232:103)
+[   33869ms] [WARNING] %s
+
+%s
+ An error occurred in the <div> component. Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://react.dev/link/error-boundaries to learn more about error boundaries. @ http://localhost:5174/@vite/client:509
+[   33872ms] NotFoundError: Failed to execute 'removeChild' on 'Node': The node to be removed is not a child of this node.
+    at removeChildFromContainer (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:10587:123)
+    at runWithFiberInDEV (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:850:66)
+    at commitDeletionEffectsOnFiber (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7105:7)
+    at recursivelyTraverseDeletionEffects (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7072:50)
+    at commitDeletionEffectsOnFiber (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7133:6)
+    at recursivelyTraverseDeletionEffects (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7072:50)
+    at commitDeletionEffectsOnFiber (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7133:6)
+    at recursivelyTraverseDeletionEffects (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7072:50)
+    at commitDeletionEffectsOnFiber (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7147:14)
+    at recursivelyTraverseDeletionEffects (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7072:50)
+[   33870ms] [WARNING] %s
+
+%s
+ An error occurred in the <div> component. Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://react.dev/link/error-boundaries to learn more about error boundaries. @ http://localhost:5174/@vite/client:509
+[   33872ms] NotFoundError: Failed to execute 'removeChild' on 'Node': The node to be removed is not a child of this node.
+    at removeChildFromContainer (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:10587:123)
+    at runWithFiberInDEV (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:850:66)
+    at commitDeletionEffectsOnFiber (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7105:7)
+    at recursivelyTraverseDeletionEffects (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7072:50)
+    at commitDeletionEffectsOnFiber (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7133:6)
+    at recursivelyTraverseDeletionEffects (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7072:50)
+    at commitDeletionEffectsOnFiber (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7133:6)
+    at recursivelyTraverseDeletionEffects (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7072:50)
+    at commitDeletionEffectsOnFiber (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7147:14)
+    at recursivelyTraverseDeletionEffects (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7072:50)
+[   33870ms] [WARNING] %s
+
+%s
+ An error occurred in the <a> component. Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://react.dev/link/error-boundaries to learn more about error boundaries. @ http://localhost:5174/@vite/client:509
+[   44206ms] [ERROR] You are calling ReactDOMClient.createRoot() on a container that has already been passed to createRoot() before. Instead, call root.render() on the existing root instead if you want to update it. @ http://localhost:5174/@vite/client:509
+[   44235ms] NotFoundError: Failed to execute 'removeChild' on 'Node': The node to be removed is not a child of this node.
+    at removeChildFromContainer (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:10587:123)
+    at runWithFiberInDEV (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:850:66)
+    at commitDeletionEffectsOnFiber (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7105:7)
+    at recursivelyTraverseDeletionEffects (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7072:50)
+    at commitDeletionEffectsOnFiber (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7133:6)
+    at recursivelyTraverseDeletionEffects (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7072:50)
+    at commitDeletionEffectsOnFiber (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7133:6)
+    at recursivelyTraverseDeletionEffects (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7072:50)
+    at commitDeletionEffectsOnFiber (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7147:14)
+    at recursivelyTraverseDeletionEffects (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7072:50)
+[   44233ms] [WARNING] %s
+
+%s
+ An error occurred in the <div> component. Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://react.dev/link/error-boundaries to learn more about error boundaries. @ http://localhost:5174/@vite/client:509
+[   44237ms] NotFoundError: Failed to execute 'removeChild' on 'Node': The node to be removed is not a child of this node.
+    at removeChildFromContainer (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:10587:123)
+    at runWithFiberInDEV (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:850:66)
+    at commitDeletionEffectsOnFiber (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7105:7)
+    at recursivelyTraverseDeletionEffects (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7072:50)
+    at commitDeletionEffectsOnFiber (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7133:6)
+    at recursivelyTraverseDeletionEffects (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7072:50)
+    at commitDeletionEffectsOnFiber (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7133:6)
+    at recursivelyTraverseDeletionEffects (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7072:50)
+    at commitDeletionEffectsOnFiber (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7147:14)
+    at recursivelyTraverseDeletionEffects (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7072:50)
+[   44233ms] [WARNING] %s
+
+%s
+ An error occurred in the <a> component. Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://react.dev/link/error-boundaries to learn more about error boundaries. @ http://localhost:5174/@vite/client:509
+[   44238ms] NotFoundError: Failed to execute 'removeChild' on 'Node': The node to be removed is not a child of this node.
+    at removeChildFromContainer (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:10587:123)
+    at runWithFiberInDEV (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:850:66)
+    at commitDeletionEffectsOnFiber (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7105:7)
+    at recursivelyTraverseDeletionEffects (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7072:50)
+    at commitDeletionEffectsOnFiber (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7133:6)
+    at recursivelyTraverseDeletionEffects (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7072:50)
+    at commitDeletionEffectsOnFiber (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7133:6)
+    at recursivelyTraverseDeletionEffects (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7072:50)
+    at commitDeletionEffectsOnFiber (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7133:6)
+    at recursivelyTraverseDeletionEffects (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7072:50)
+[   44233ms] [WARNING] %s
+
+%s
+ An error occurred in the <nav> component. Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://react.dev/link/error-boundaries to learn more about error boundaries. @ http://localhost:5174/@vite/client:509
+[   44241ms] NotFoundError: Failed to execute 'removeChild' on 'Node': The node to be removed is not a child of this node.
+    at removeChildFromContainer (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:10587:123)
+    at runWithFiberInDEV (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:850:66)
+    at commitDeletionEffectsOnFiber (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7105:7)
+    at recursivelyTraverseDeletionEffects (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7072:50)
+    at commitDeletionEffectsOnFiber (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7133:6)
+    at recursivelyTraverseDeletionEffects (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7072:50)
+    at commitDeletionEffectsOnFiber (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7133:6)
+    at recursivelyTraverseDeletionEffects (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7072:50)
+    at commitDeletionEffectsOnFiber (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7133:6)
+    at recursivelyTraverseDeletionEffects (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7072:50)
+[   44233ms] [WARNING] %s
+
+%s
+ An error occurred in the <div> component. Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://react.dev/link/error-boundaries to learn more about error boundaries. @ http://localhost:5174/@vite/client:509
+[   44242ms] NotFoundError: Failed to execute 'removeChild' on 'Node': The node to be removed is not a child of this node.
+    at removeChildFromContainer (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:10587:123)
+    at runWithFiberInDEV (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:850:66)
+    at commitDeletionEffectsOnFiber (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7105:7)
+    at recursivelyTraverseDeletionEffects (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7072:50)
+    at commitDeletionEffectsOnFiber (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7133:6)
+    at recursivelyTraverseDeletionEffects (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7072:50)
+    at commitDeletionEffectsOnFiber (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7133:6)
+    at recursivelyTraverseDeletionEffects (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7072:50)
+    at commitDeletionEffectsOnFiber (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7133:6)
+    at recursivelyTraverseDeletionEffects (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7072:50)
+[   44233ms] [WARNING] %s
+
+%s
+ An error occurred in the <div> component. Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://react.dev/link/error-boundaries to learn more about error boundaries. @ http://localhost:5174/@vite/client:509
+[   45765ms] NotFoundError: Failed to execute 'removeChild' on 'Node': The node to be removed is not a child of this node.
+    at removeChildFromContainer (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:10587:123)
+    at runWithFiberInDEV (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:850:66)
+    at commitDeletionEffectsOnFiber (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7105:7)
+    at recursivelyTraverseDeletionEffects (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7072:50)
+    at commitDeletionEffectsOnFiber (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7133:6)
+    at recursivelyTraverseDeletionEffects (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7072:50)
+    at commitDeletionEffectsOnFiber (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7133:6)
+    at recursivelyTraverseDeletionEffects (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7072:50)
+    at commitDeletionEffectsOnFiber (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7133:6)
+    at recursivelyTraverseMutationEffects (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7222:5)
+[   45763ms] [WARNING] %s
+
+%s
+ An error occurred in the <nav> component. Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://react.dev/link/error-boundaries to learn more about error boundaries. @ http://localhost:5174/@vite/client:509
+[   45767ms] NotFoundError: Failed to execute 'removeChild' on 'Node': The node to be removed is not a child of this node.
+    at removeChildFromContainer (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:10587:123)
+    at runWithFiberInDEV (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:850:66)
+    at commitDeletionEffectsOnFiber (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7105:7)
+    at recursivelyTraverseDeletionEffects (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7072:50)
+    at commitDeletionEffectsOnFiber (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7133:6)
+    at recursivelyTraverseDeletionEffects (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7072:50)
+    at commitDeletionEffectsOnFiber (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7133:6)
+    at recursivelyTraverseDeletionEffects (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7072:50)
+    at commitDeletionEffectsOnFiber (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7133:6)
+    at recursivelyTraverseMutationEffects (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7222:5)
+[   45764ms] [WARNING] %s
+
+%s
+ An error occurred in the <div> component. Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://react.dev/link/error-boundaries to learn more about error boundaries. @ http://localhost:5174/@vite/client:509
+[   45767ms] NotFoundError: Failed to execute 'removeChild' on 'Node': The node to be removed is not a child of this node.
+    at removeChildFromContainer (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:10587:123)
+    at runWithFiberInDEV (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:850:66)
+    at commitDeletionEffectsOnFiber (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7105:7)
+    at recursivelyTraverseDeletionEffects (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7072:50)
+    at commitDeletionEffectsOnFiber (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7133:6)
+    at recursivelyTraverseDeletionEffects (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7072:50)
+    at commitDeletionEffectsOnFiber (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7133:6)
+    at recursivelyTraverseMutationEffects (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7222:5)
+    at commitMutationEffectsOnFiber (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7392:6)
+    at recursivelyTraverseMutationEffects (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7232:103)
+[   45764ms] [WARNING] %s
+
+%s
+ An error occurred in the <div> component. Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://react.dev/link/error-boundaries to learn more about error boundaries. @ http://localhost:5174/@vite/client:509
+[   45769ms] NotFoundError: Failed to execute 'removeChild' on 'Node': The node to be removed is not a child of this node.
+    at removeChildFromContainer (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:10587:123)
+    at runWithFiberInDEV (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:850:66)
+    at commitDeletionEffectsOnFiber (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7105:7)
+    at recursivelyTraverseDeletionEffects (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7072:50)
+    at commitDeletionEffectsOnFiber (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7133:6)
+    at recursivelyTraverseDeletionEffects (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7072:50)
+    at commitDeletionEffectsOnFiber (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7133:6)
+    at recursivelyTraverseDeletionEffects (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7072:50)
+    at commitDeletionEffectsOnFiber (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7147:14)
+    at recursivelyTraverseDeletionEffects (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7072:50)
+[   45764ms] [WARNING] %s
+
+%s
+ An error occurred in the <div> component. Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://react.dev/link/error-boundaries to learn more about error boundaries. @ http://localhost:5174/@vite/client:509
+[   45769ms] NotFoundError: Failed to execute 'removeChild' on 'Node': The node to be removed is not a child of this node.
+    at removeChildFromContainer (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:10587:123)
+    at runWithFiberInDEV (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:850:66)
+    at commitDeletionEffectsOnFiber (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7105:7)
+    at recursivelyTraverseDeletionEffects (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7072:50)
+    at commitDeletionEffectsOnFiber (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7133:6)
+    at recursivelyTraverseDeletionEffects (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7072:50)
+    at commitDeletionEffectsOnFiber (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7133:6)
+    at recursivelyTraverseDeletionEffects (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7072:50)
+    at commitDeletionEffectsOnFiber (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7147:14)
+    at recursivelyTraverseDeletionEffects (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7072:50)
+[   45764ms] [WARNING] %s
+
+%s
+ An error occurred in the <a> component. Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://react.dev/link/error-boundaries to learn more about error boundaries. @ http://localhost:5174/@vite/client:509
+[   46590ms] NotFoundError: Failed to execute 'removeChild' on 'Node': The node to be removed is not a child of this node.
+    at removeChildFromContainer (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:10587:123)
+    at runWithFiberInDEV (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:850:66)
+    at commitDeletionEffectsOnFiber (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7105:7)
+    at recursivelyTraverseDeletionEffects (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7072:50)
+    at commitDeletionEffectsOnFiber (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7133:6)
+    at recursivelyTraverseDeletionEffects (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7072:50)
+    at commitDeletionEffectsOnFiber (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7133:6)
+    at recursivelyTraverseDeletionEffects (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7072:50)
+    at commitDeletionEffectsOnFiber (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7133:6)
+    at recursivelyTraverseMutationEffects (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7222:5)
+[   46589ms] [WARNING] %s
+
+%s
+ An error occurred in the <nav> component. Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://react.dev/link/error-boundaries to learn more about error boundaries. @ http://localhost:5174/@vite/client:509
+[   46592ms] NotFoundError: Failed to execute 'removeChild' on 'Node': The node to be removed is not a child of this node.
+    at removeChildFromContainer (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:10587:123)
+    at runWithFiberInDEV (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:850:66)
+    at commitDeletionEffectsOnFiber (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7105:7)
+    at recursivelyTraverseDeletionEffects (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7072:50)
+    at commitDeletionEffectsOnFiber (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7133:6)
+    at recursivelyTraverseDeletionEffects (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7072:50)
+    at commitDeletionEffectsOnFiber (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7133:6)
+    at recursivelyTraverseDeletionEffects (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7072:50)
+    at commitDeletionEffectsOnFiber (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7133:6)
+    at recursivelyTraverseMutationEffects (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7222:5)
+[   46589ms] [WARNING] %s
+
+%s
+ An error occurred in the <div> component. Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://react.dev/link/error-boundaries to learn more about error boundaries. @ http://localhost:5174/@vite/client:509
+[   46593ms] NotFoundError: Failed to execute 'removeChild' on 'Node': The node to be removed is not a child of this node.
+    at removeChildFromContainer (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:10587:123)
+    at runWithFiberInDEV (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:850:66)
+    at commitDeletionEffectsOnFiber (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7105:7)
+    at recursivelyTraverseDeletionEffects (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7072:50)
+    at commitDeletionEffectsOnFiber (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7133:6)
+    at recursivelyTraverseDeletionEffects (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7072:50)
+    at commitDeletionEffectsOnFiber (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7133:6)
+    at recursivelyTraverseMutationEffects (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7222:5)
+    at commitMutationEffectsOnFiber (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7392:6)
+    at recursivelyTraverseMutationEffects (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7232:103)
+[   46589ms] [WARNING] %s
+
+%s
+ An error occurred in the <div> component. Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://react.dev/link/error-boundaries to learn more about error boundaries. @ http://localhost:5174/@vite/client:509
+[   46593ms] NotFoundError: Failed to execute 'removeChild' on 'Node': The node to be removed is not a child of this node.
+    at removeChildFromContainer (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:10587:123)
+    at runWithFiberInDEV (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:850:66)
+    at commitDeletionEffectsOnFiber (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7105:7)
+    at recursivelyTraverseDeletionEffects (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7072:50)
+    at commitDeletionEffectsOnFiber (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7133:6)
+    at recursivelyTraverseDeletionEffects (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7072:50)
+    at commitDeletionEffectsOnFiber (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7133:6)
+    at recursivelyTraverseDeletionEffects (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7072:50)
+    at commitDeletionEffectsOnFiber (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7147:14)
+    at recursivelyTraverseDeletionEffects (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7072:50)
+[   46590ms] [WARNING] %s
+
+%s
+ An error occurred in the <div> component. Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://react.dev/link/error-boundaries to learn more about error boundaries. @ http://localhost:5174/@vite/client:509
+[   46594ms] NotFoundError: Failed to execute 'removeChild' on 'Node': The node to be removed is not a child of this node.
+    at removeChildFromContainer (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:10587:123)
+    at runWithFiberInDEV (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:850:66)
+    at commitDeletionEffectsOnFiber (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7105:7)
+    at recursivelyTraverseDeletionEffects (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7072:50)
+    at commitDeletionEffectsOnFiber (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7133:6)
+    at recursivelyTraverseDeletionEffects (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7072:50)
+    at commitDeletionEffectsOnFiber (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7133:6)
+    at recursivelyTraverseDeletionEffects (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7072:50)
+    at commitDeletionEffectsOnFiber (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7147:14)
+    at recursivelyTraverseDeletionEffects (http://localhost:5174/@fs/Users/adamtimberlake/Webroot/ReactWayfinder/node_modules/.vite/deps/client-DN9gUMy_.js?v=29213dea:7072:50)
+[   46590ms] [WARNING] %s
+
+%s
+ An error occurred in the <a> component. Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://react.dev/link/error-boundaries to learn more about error boundaries. @ http://localhost:5174/@vite/client:509
