@@ -8,8 +8,6 @@ Strongly-typed React router built on the [Navigation API](https://web.dev/blog/b
 
 </div>
 
----
-
 ## Table of Contents
 
 1. [Getting Started](#getting-started)
@@ -21,7 +19,6 @@ Strongly-typed React router built on the [Navigation API](https://web.dev/blog/b
 7. [Sub-Routes](#sub-routes)
 8. [API](#api)
 
----
 
 ## Getting Started
 
@@ -45,6 +42,7 @@ Define your routes and render the router:
 ```tsx
 import { createRoot } from "react-dom/client";
 import { route, Router } from "react-wayfinder";
+import type { Routes } from "react-wayfinder";
 
 const routes = [
   route({
@@ -66,7 +64,7 @@ const routes = [
       }
     },
   }),
-];
+] satisfies Routes;
 
 createRoot(document.getElementById("root")!).render(
   <Router routes={routes} />
@@ -75,7 +73,6 @@ createRoot(document.getElementById("root")!).render(
 
 Routes **without** a loader receive `params` and `url`. Routes **with** a loader receive a discriminated union &mdash; narrow `data` via `status` (`"loading"`, `"ready"`, `"error"`). Use `"*"` as a catch-all for unmatched routes.
 
----
 
 ## Navigation State
 
@@ -108,7 +105,6 @@ import { Route, url } from "react-wayfinder";
 | `pending` | `boolean` | `true` if this instance was clicked AND a loader is running |
 | `handler` | `(event?) => void` | Attach as `onClick` &mdash; marks instance, navigates for non-anchors |
 
----
 
 ## Cancellation
 
@@ -126,7 +122,6 @@ async loader({ params, signal }) {
 
 When cancelled, the router restores the previous route and URL &mdash; no stale state. Escape only fires when a loader is in-flight; pressing Escape after navigation completes does nothing.
 
----
 
 ## Caching
 
@@ -143,7 +138,6 @@ async loader({ params, signal, cache }) {
 
 Previously visited routes are preserved in the DOM using React `<Activity>` &mdash; their component state, scroll position, and form inputs survive navigation. The example app's `/feed` route demonstrates this: scroll down to load more items via the infinite loader, navigate away, then come back &mdash; your scroll position and every loaded item are still there.
 
----
 
 ## View Transitions
 
@@ -171,7 +165,6 @@ The router automatically wraps route swaps in `document.startViewTransition()` w
 
 Direction is detected via the Navigation API &mdash; `"back"` when traversing to a lower history index, `"forward"` otherwise. Cancel clears the `data-direction` attribute to prevent unwanted animations.
 
----
 
 ## Router Modes
 
@@ -188,7 +181,6 @@ import { Router } from "react-wayfinder";
 | `"deferred"` (default) | Keeps the previous page on screen while the loader runs. Inline spinners via `<Route>` show on the clicked element. |
 | `"immediate"` | Switches to the new route immediately with `status: "loading"` so you can render skeletons. Escape restores the previous route from the preserved `<Activity>`. |
 
----
 
 ## Sub-Routes
 
@@ -233,16 +225,44 @@ const routes = [
       return <Contact method={params.method} />;
     },
   }),
-];
+] satisfies Routes;
+```
+
+The component rendered by each sub-route uses `<Route>` to build its own tab navigation. Because every sub-route renders the same `Contact` shell, the tabs appear on all of them &mdash; and `active` highlights whichever tab matches the current URL:
+
+```tsx
+import { Route, url } from "react-wayfinder";
+
+const methods = ["email", "telephone", "postal"] as const;
+
+function Contact({ method }: { method: string }) {
+  return (
+    <nav>
+      {methods.map(value => (
+        <Route key={value} href={url(urls.contact, { method: value })}>
+          {route => (
+            <a
+              href={route.href}
+              onClick={route.handler}
+              className={route.active ? "active" : ""}
+            >
+              {value}
+              {route.pending ? <Spinner /> : null}
+            </a>
+          )}
+        </Route>
+      ))}
+    </nav>
+  );
+}
 ```
 
 The key points:
 
 - **Default redirect** &mdash; a bare `/contact` route calls `navigation.navigate()` with `{ history: "replace" }` so the redirect does not create a back-button entry.
 - **Specific before generic** &mdash; `/contact/postal` is listed before `/contact/:method` so it matches first and runs its loader. All other methods fall through to the parameterised route.
-- **Sub-navigation** &mdash; the component renders `<Route>` links for each method, using `url(urls.contact, { method: "email" })` to build the hrefs. The `active` state highlights the current tab.
+- **Sub-navigation** &mdash; each component renders `<Route>` links for every method. `active` highlights the current tab and `pending` shows a spinner only on the tab that was clicked.
 
----
 
 ## API
 

@@ -21,6 +21,21 @@ export default defineConfig(({ command }) => ({
             fileName: "react-wayfinder",
             formats: ["es", "cjs"],
           },
+          minify: "terser",
+          terserOptions: {
+            compress: {
+              drop_console: true,
+              drop_debugger: true,
+              passes: 3,
+              pure_getters: true,
+              toplevel: true,
+              ecma: 2020,
+            },
+            format: {
+              comments: false,
+            },
+            mangle: true,
+          },
           rollupOptions: {
             external: ["react", "react-dom", "react/jsx-runtime"],
             output: {
