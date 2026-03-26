@@ -1,4 +1,4 @@
-import { Route, url } from "react-wayfinder";
+import { Route, useRouter } from "react-wayfinder";
 import type { RouterMode } from "react-wayfinder";
 import { urls } from "../../utils";
 import { useMode } from "../mode";
@@ -9,13 +9,14 @@ import { Spinner } from "../../styles";
 
 /** Top-level navigation bar with route links, per-link pending spinners, and a mode switcher. */
 export default function Navigation() {
+  const router = useRouter();
   const { mode, setMode } = useMode();
   const { names } = useNames();
 
   return (
     <>
       <Container>
-        <Route href={url(urls.home)}>
+        <Route href={router.url(urls.home)}>
           {(route) => (
             <A href={route.href} active={route.active} onClick={route.handler}>
               Home
@@ -23,7 +24,7 @@ export default function Navigation() {
           )}
         </Route>
 
-        <Route href={url(urls.about)}>
+        <Route href={router.url(urls.about)}>
           {(route) => (
             <A href={route.href} active={route.active} onClick={route.handler}>
               About
@@ -31,7 +32,7 @@ export default function Navigation() {
           )}
         </Route>
 
-        <Route href={url(urls.feed)}>
+        <Route href={router.url(urls.feed)}>
           {(route) => (
             <A href={route.href} active={route.active} onClick={route.handler}>
               Feed
@@ -40,7 +41,7 @@ export default function Navigation() {
         </Route>
 
         {[1, 2, 3].map((id) => (
-          <Route key={id} href={url(urls.user, { id })}>
+          <Route key={id} href={router.url(urls.user, { id })}>
             {(route) => (
               <A
                 href={route.href}
@@ -54,7 +55,7 @@ export default function Navigation() {
         ))}
 
         <Route
-          href={url(urls.contact, { method: "email" })}
+          href={router.url(urls.contact, { method: "email" })}
           active={(path) => path.startsWith("/contact")}
         >
           {(route) => (

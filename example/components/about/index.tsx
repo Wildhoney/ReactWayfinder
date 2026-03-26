@@ -1,4 +1,4 @@
-import { Route, url } from "react-wayfinder";
+import { Route, useRouter } from "react-wayfinder";
 import { urls } from "../../utils";
 import { useNames } from "../names";
 import Navigation from "../navigation";
@@ -7,6 +7,7 @@ import { Spinner } from "../../styles";
 
 /** Static about page with navigable team member cards. Has no loader so it renders instantly. */
 export default function About() {
+  const router = useRouter();
   const { names } = useNames();
 
   return (
@@ -18,7 +19,7 @@ export default function About() {
         <h2>Team</h2>
         <Profiles>
           {[1, 2, 3].map((id) => (
-            <Route key={id} href={url(urls.user, { id })}>
+            <Route key={id} href={router.url(urls.user, { id })}>
               {(route) => (
                 <Card onClick={route.handler}>
                   <Avatar

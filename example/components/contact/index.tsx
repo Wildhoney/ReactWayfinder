@@ -1,4 +1,4 @@
-import { Route, url } from "react-wayfinder";
+import { Route, useRouter } from "react-wayfinder";
 import { urls } from "../../utils";
 import Navigation from "../navigation";
 import type { ContactMethod } from "./types";
@@ -28,6 +28,8 @@ type Props =
   | { method: "postal"; status: "error"; address?: undefined; error: Error };
 
 export default function Contact({ method, status, address, error }: Props) {
+  const router = useRouter();
+
   return (
     <>
       <Navigation />
@@ -35,7 +37,10 @@ export default function Contact({ method, status, address, error }: Props) {
         <h1>Contact</h1>
         <SubNav>
           {methods.map(({ method: value, label }) => (
-            <Route key={value} href={url(urls.contact, { method: value })}>
+            <Route
+              key={value}
+              href={router.url(urls.contact, { method: value })}
+            >
               {(route) => (
                 <Tab
                   href={route.href}

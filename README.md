@@ -17,7 +17,6 @@ Strongly-typed React router built on the [Navigation API](https://web.dev/blog/b
 5. [View Transitions](#view-transitions)
 6. [Router Modes](#router-modes)
 7. [Sub-Routes](#sub-routes)
-8. [API](#api)
 
 
 ## Getting Started
@@ -28,7 +27,7 @@ Install `react-wayfinder` using your preferred package manager:
 yarn add react-wayfinder
 ```
 
-Define your URL patterns in a central `urls` object so every route definition, `url()` call, and `<Route>` reference points to a single source of truth. Changing a pattern updates every call site at once:
+Define your URL patterns in a central `urls` object so every route definition, `router.url()` call, and `<Route>` reference points to a single source of truth. Changing a pattern updates every call site at once:
 
 ```tsx
 export const urls = {
@@ -79,9 +78,11 @@ Routes **without** a loader receive `params` and `url`. Routes **with** a loader
 Wrap any navigable element in `<Route>` to get `active`, `pending`, and `handler`. For `<a>` tags, attach `handler` as `onClick` &mdash; the Navigation API intercepts the click natively, and `handler` marks the instance. For `<button>` elements, `handler` also calls `navigation.navigate()`. Only the element you physically clicked shows `pending: true`:
 
 ```tsx
-import { Route, url } from "react-wayfinder";
+import { Route, useRouter } from "react-wayfinder";
 
-<Route href={url(urls.user, { id: 1 })}>
+const router = useRouter();
+
+<Route href={router.url(urls.user, { id: 1 })}>
   {route => (
     <a href={route.href} onClick={route.handler}>
       User 1 {route.pending ? <Spinner /> : null}
@@ -89,7 +90,7 @@ import { Route, url } from "react-wayfinder";
   )}
 </Route>
 
-<Route href={url(urls.user, { id: 1 })}>
+<Route href={router.url(urls.user, { id: 1 })}>
   {route => (
     <button onClick={route.handler}>
       User 1 {route.pending ? <Spinner /> : null}
@@ -171,8 +172,6 @@ Direction is detected via the Navigation API &mdash; `"back"` when traversing to
 The `mode` prop controls how the router transitions between routes with loaders:
 
 ```tsx
-import { Router } from "react-wayfinder";
-
 <Router routes={routes} mode="deferred" />
 ```
 
@@ -180,6 +179,20 @@ import { Router } from "react-wayfinder";
 |---|---|
 | `"deferred"` (default) | Keeps the previous page on screen while the loader runs. Inline spinners via `<Route>` show on the clicked element. |
 | `"immediate"` | Switches to the new route immediately with `status: "loading"` so you can render skeletons. Escape restores the previous route from the preserved `<Activity>`. |
+
+When deploying to a sub-path (e.g. `https://example.com/my-app/`), pass `base` so the router strips the prefix before matching &mdash; route patterns stay root-relative. With Vite, use `import.meta.env.BASE_URL` to keep it in sync with your config:
+
+```tsx
+<Router routes={routes} base={import.meta.env.BASE_URL} />
+```
+
+Use `useRouter()` for navigation status and the base-aware URL builder:
+
+```tsx
+const router = useRouter();
+// router.status: "idle" | "navigating"
+// router.url(urls.user, { id: 42 }): "/users/42"
+```
 
 
 ## Sub-Routes
@@ -231,15 +244,17 @@ const routes = [
 The component rendered by each sub-route uses `<Route>` to build its own tab navigation. Because every sub-route renders the same `Contact` shell, the tabs appear on all of them &mdash; and `active` highlights whichever tab matches the current URL:
 
 ```tsx
-import { Route, url } from "react-wayfinder";
+import { Route, useRouter } from "react-wayfinder";
 
 const methods = ["email", "telephone", "postal"] as const;
 
 function Contact({ method }: { method: string }) {
+  const router = useRouter();
+
   return (
     <nav>
       {methods.map(value => (
-        <Route key={value} href={url(urls.contact, { method: value })}>
+        <Route key={value} href={router.url(urls.contact, { method: value })}>
           {route => (
             <a
               href={route.href}
@@ -264,65 +279,3 @@ The key points:
 - **Sub-navigation** &mdash; each component renders `<Route>` links for every method. `active` highlights the current tab and `pending` shows a spinner only on the tab that was clicked.
 
 
-## API
-
-### `Router`
-
-Top-level component powered by the Navigation API. Intercepts all navigations &mdash; link clicks, back/forward, form submissions, and `navigation.navigate()` calls. Accepts `children` for persistent elements like progress bars.
-
-```tsx
-<Router routes={routes} mode="deferred">
-  <Progress />
-</Router>
-```
-
-### `route()`
-
-Strongly-typed route definition. Infers param types from the URL pattern and loader return type for the component's `data`.
-
-### `url()`
-
-Strongly-typed URL builder. Returns a `string` &mdash; does not trigger navigation.
-
-```tsx
-import { url } from "react-wayfinder";
-
-<a href={url(urls.user, { id: 42 })}>User 42</a>
-```
-
-### `Route`
-
-Render-prop component scoped to a single `href`. Provides `active`, `pending`, and `handler`. Only the physically clicked instance shows pending.
-
-```tsx
-<Route href={url(urls.about)}>
-  {route => (
-    <a href={route.href} onClick={route.handler}>
-      About {route.pending ? <Spinner /> : null}
-    </a>
-  )}
-</Route>
-```
-
-### `Routes`
-
-Utility type for validating route arrays at the type level. Use with `satisfies` to catch misconfigurations while preserving inferred types:
-
-```tsx
-import { route } from "react-wayfinder";
-import type { Routes } from "react-wayfinder";
-
-export const routes = [
-  route({ url: urls.home, component() { return <Home />; } }),
-  route({ url: "*", component() { return <Missing />; } }),
-] satisfies Routes;
-```
-
-### `useNavigation()`
-
-Hook for global navigation status. Useful for top-level progress bars.
-
-```tsx
-const navigation = useNavigation();
-// navigation.status: "idle" | "navigating"
-```

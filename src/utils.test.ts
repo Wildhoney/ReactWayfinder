@@ -1,5 +1,12 @@
 import { describe, it, expect } from "vitest";
-import { patternToRegex, matchPath, buildUrl, resolveMatch } from "./utils";
+import {
+  patternToRegex,
+  matchPath,
+  buildUrl,
+  resolveMatch,
+  stripBase,
+  prefixBase,
+} from "./utils";
 
 describe("patternToRegex", () => {
   it("converts a static path to regex", () => {
@@ -118,5 +125,58 @@ describe("resolveMatch", () => {
     const url = new URL("http://localhost/unknown/page");
     const result = resolveMatch(url, routes);
     expect(result?.route.url).toBe("*");
+  });
+
+  it("strips base before matching", () => {
+    const url = new URL("http://localhost/app/users/42");
+    const result = resolveMatch(url, routes, "/app");
+    expect(result?.route.url).toBe("/users/:id");
+    expect(result?.params).toEqual({ id: "42" });
+  });
+
+  it("matches root with base", () => {
+    const url = new URL("http://localhost/app/");
+    const result = resolveMatch(url, routes, "/app");
+    expect(result?.route.url).toBe("/");
+  });
+});
+
+describe("stripBase", () => {
+  it("strips a base prefix from a pathname", () => {
+    expect(stripBase("/app/about", "/app")).toBe("/about");
+  });
+
+  it("returns / when pathname equals the base", () => {
+    expect(stripBase("/app", "/app")).toBe("/");
+  });
+
+  it("returns / when pathname equals the base with trailing slash", () => {
+    expect(stripBase("/app/", "/app")).toBe("/");
+  });
+
+  it("handles base with trailing slash", () => {
+    expect(stripBase("/app/about", "/app/")).toBe("/about");
+  });
+
+  it("returns pathname unchanged when base does not match", () => {
+    expect(stripBase("/other/about", "/app")).toBe("/other/about");
+  });
+});
+
+describe("prefixBase", () => {
+  it("prepends base to a route path", () => {
+    expect(prefixBase("/about", "/app")).toBe("/app/about");
+  });
+
+  it("prepends base to root path", () => {
+    expect(prefixBase("/", "/app")).toBe("/app/");
+  });
+
+  it("handles base with trailing slash", () => {
+    expect(prefixBase("/about", "/app/")).toBe("/app/about");
+  });
+
+  it("returns pathname unchanged when base is empty", () => {
+    expect(prefixBase("/about", "")).toBe("/about");
   });
 });

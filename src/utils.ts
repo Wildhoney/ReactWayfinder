@@ -86,6 +86,16 @@ export function stripBase(pathname: string, base: string): string {
 }
 
 /**
+ * Prepends a base path to a route-relative pathname.
+ * Returns the pathname unchanged when no base is set.
+ */
+export function prefixBase(pathname: string, base: string): string {
+  if (!base) return pathname;
+  const normalised = base.endsWith("/") ? base.slice(0, -1) : base;
+  return pathname === "/" ? normalised + "/" : normalised + pathname;
+}
+
+/**
  * Substitutes `:param` segments in a URL pattern with the provided values.
  * Throws if a required param is missing.
  *

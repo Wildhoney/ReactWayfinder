@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, act } from "@testing-library/react";
-import { url, Route, Router, useNavigation } from "./index";
+import { Route, Router, useRouter } from "./index";
 
 // Mock the Navigation API.
 const mockNavigation = {
@@ -21,25 +21,64 @@ beforeEach(() => {
   mockNavigation.navigate.mockClear();
 });
 
-describe("url()", () => {
+describe("useRouter().url()", () => {
+  function UrlTest({
+    pattern,
+    params,
+  }: {
+    pattern: string;
+    params?: Record<string, string | number>;
+  }) {
+    const router = useRouter();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const result = (router.url as any)(pattern, params);
+    return <span data-testid="url-result">{result}</span>;
+  }
+
+  function renderWithRouter(element: React.ReactNode, base = "") {
+    const routes = [{ url: "/", component: () => element }];
+    return render(<Router routes={routes} base={base} />);
+  }
+
   it("returns a static path as-is", () => {
-    expect(url("/about")).toBe("/about");
+    renderWithRouter(<UrlTest pattern="/about" />);
+    expect(screen.getByTestId("url-result").textContent).toBe("/about");
   });
 
   it("substitutes params into the pattern", () => {
-    expect(url("/users/:id", { id: 42 })).toBe("/users/42");
+    renderWithRouter(<UrlTest pattern="/users/:id" params={{ id: 42 }} />);
+    expect(screen.getByTestId("url-result").textContent).toBe("/users/42");
   });
 
   it("substitutes multiple params", () => {
-    expect(url("/posts/:slug/comments/:cid", { slug: "hello", cid: 5 })).toBe(
+    renderWithRouter(
+      <UrlTest
+        pattern="/posts/:slug/comments/:cid"
+        params={{ slug: "hello", cid: 5 }}
+      />,
+    );
+    expect(screen.getByTestId("url-result").textContent).toBe(
       "/posts/hello/comments/5",
     );
   });
 
   it("encodes param values", () => {
-    expect(url("/users/:name", { name: "hello world" })).toBe(
+    renderWithRouter(
+      <UrlTest pattern="/users/:name" params={{ name: "hello world" }} />,
+    );
+    expect(screen.getByTestId("url-result").textContent).toBe(
       "/users/hello%20world",
     );
+  });
+
+  it("prefixes base path", () => {
+    renderWithRouter(<UrlTest pattern="/about" />, "/app");
+    expect(screen.getByTestId("url-result").textContent).toBe("/app/about");
+  });
+
+  it("prefixes base path to root", () => {
+    renderWithRouter(<UrlTest pattern="/" />, "/app");
+    expect(screen.getByTestId("url-result").textContent).toBe("/app/");
   });
 });
 
@@ -185,28 +224,16 @@ describe("Route", () => {
   });
 });
 
-describe("useNavigation", () => {
+describe("useRouter", () => {
   it("provides idle status by default", () => {
     function Status() {
-      const { status } = useNavigation();
-      return <span data-testid="status">{status}</span>;
+      const router = useRouter();
+      return <span data-testid="status">{router.status}</span>;
     }
 
     const routes = [{ url: "/", component: () => <Status /> }];
 
     render(<Router routes={routes} />);
     expect(screen.getByTestId("status").textContent).toBe("idle");
-  });
-
-  it("provides the current url", () => {
-    function CurrentUrl() {
-      const { url } = useNavigation();
-      return <span data-testid="url">{url}</span>;
-    }
-
-    const routes = [{ url: "/", component: () => <CurrentUrl /> }];
-
-    render(<Router routes={routes} />);
-    expect(screen.getByTestId("url").textContent).toBe("/");
   });
 });

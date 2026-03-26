@@ -23,44 +23,41 @@ import type {
   RouteEntry,
   RouteProps,
 } from "./types";
-import { resolveMatch, buildUrl } from "./utils";
+import { resolveMatch, buildUrl, prefixBase } from "./utils";
 
 const Context = createContext<RouterContext>({
   status: "idle",
   destination: null,
-  url: null,
+  pathname: null,
   navigationId: 0,
+  base: "",
 });
 
 /**
- * Access the global navigation status. Useful for top-level progress bars
- * that should animate on any navigation, regardless of which element triggered it.
+ * Access navigation status and the base-aware URL builder.
  *
  * @example
  * ```tsx
- * const { status } = useNavigation();
- * <ProgressBar isAnimating={status === "navigating"} />
+ * const router = useRouter();
+ * <a href={router.url("/users/:id", { id: 42 })}>User 42</a>
+ * <ProgressBar isAnimating={router.status === "navigating"} />
  * ```
  */
-export function useNavigation() {
-  return useContext(Context);
-}
+export function useRouter() {
+  const context = useContext(Context);
 
-/**
- * Strongly-typed URL builder. Returns a `string` — does not trigger navigation.
- * Use in `<a href>` or pass to `navigation.navigate()`.
- *
- * @example
- * ```tsx
- * <a href={url("/users/:id", { id: 42 })}>User 42</a>
- * ```
- */
-export const url: UrlFn = ((
-  pattern: string,
-  params?: Record<string, string | number>,
-) => {
-  return params ? buildUrl(pattern, params) : pattern;
-}) as UrlFn;
+  const url: UrlFn = useMemo(() => {
+    return ((pattern: string, params?: Record<string, string | number>) => {
+      const built = params ? buildUrl(pattern, params) : pattern;
+      return prefixBase(built, context.base);
+    }) as UrlFn;
+  }, [context.base]);
+
+  return useMemo(
+    () => ({ status: context.status, url }),
+    [context.status, url],
+  );
+}
 
 /**
  * Render-prop component scoped to a single href. Provides `active` and
@@ -108,8 +105,8 @@ export function Route({ href, active, children }: RouteProps) {
     context.destination === href;
 
   const isActive = active
-    ? context.url != null && active(context.url)
-    : context.url === href;
+    ? context.pathname != null && active(context.pathname)
+    : context.pathname === href;
 
   return (
     <>
@@ -367,10 +364,11 @@ export function Router({
     () => ({
       status,
       destination,
-      url: activePathname,
+      pathname: activePathname,
       navigationId,
+      base,
     }),
-    [status, destination, activePathname, navigationId],
+    [status, destination, activePathname, navigationId, base],
   );
 
   return (

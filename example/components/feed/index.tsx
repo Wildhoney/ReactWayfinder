@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Route, url } from "react-wayfinder";
+import { Route, useRouter } from "react-wayfinder";
 import { urls } from "../../utils";
 import Navigation from "../navigation";
 import {
@@ -25,6 +25,7 @@ function generateItems(offset: number, count: number): FeedItem[] {
 
 /** Infinite-scroll feed page. Scroll state and loaded items survive navigation via `<Activity>`. */
 export default function Feed() {
+  const router = useRouter();
   const [items, setItems] = useState<FeedItem[]>(() =>
     generateItems(0, PAGE_SIZE),
   );
@@ -68,7 +69,7 @@ export default function Feed() {
         </p>
         <List>
           {items.map((item) => (
-            <Route key={item.id} href={url(urls.post, { id: item.id })}>
+            <Route key={item.id} href={router.url(urls.post, { id: item.id })}>
               {(route) => (
                 <Item href={route.href} onClick={route.handler}>
                   <Thumbnail hue={item.hue} />

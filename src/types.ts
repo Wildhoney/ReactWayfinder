@@ -174,8 +174,9 @@ export type NavigationDirection = "forward" | "back";
 export type RouterContext = {
   status: NavigationStatus;
   destination: string | null;
-  url: string | null;
+  pathname: string | null;
   navigationId: number;
+  base: string;
 };
 
 /** State provided to a {@link Route} child render function. */
