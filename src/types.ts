@@ -142,6 +142,8 @@ export type RouterProps = {
   routes: Path[];
   /** @default "deferred" */
   mode?: RouterMode;
+  /** Base path prefix stripped before matching (e.g. `"/ReactWayfinder"`). @default "" */
+  base?: string;
   /** Persistent elements rendered alongside matched routes (e.g. progress bars). */
   children?: React.ReactNode;
 };

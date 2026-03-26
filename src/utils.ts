@@ -55,14 +55,34 @@ export function matchPath(pathname: string, pattern: string): Params | null {
 /**
  * Finds the first route that matches the given URL and returns the match
  * with extracted params. Returns `null` if no route matches.
+ *
+ * When {@link base} is provided the prefix is stripped from the pathname
+ * before matching so route patterns stay root-relative (e.g. `"/"`).
  */
-export function resolveMatch(url: URL, routes: Path[]): RouteMatch | null {
+export function resolveMatch(
+  url: URL,
+  routes: Path[],
+  base = "",
+): RouteMatch | null {
+  const pathname = base ? stripBase(url.pathname, base) : url.pathname;
+
   for (const route of routes) {
-    const params = matchPath(url.pathname, route.url);
+    const params = matchPath(pathname, route.url);
     if (params !== null) return { params, route, url };
   }
 
   return null;
+}
+
+/**
+ * Strips a base path prefix from a pathname.
+ * Returns `"/"` when the pathname equals the base exactly.
+ */
+export function stripBase(pathname: string, base: string): string {
+  const normalised = base.endsWith("/") ? base.slice(0, -1) : base;
+  if (!pathname.startsWith(normalised)) return pathname;
+  const stripped = pathname.slice(normalised.length);
+  return stripped === "" ? "/" : stripped;
 }
 
 /**

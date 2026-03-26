@@ -12,7 +12,7 @@ function App() {
   const { mode } = useMode();
 
   return (
-    <Router routes={routes} mode={mode}>
+    <Router routes={routes} mode={mode} base={import.meta.env.BASE_URL}>
       <Progress />
       <GithubCorner href="https://github.com/Wildhoney/ReactWayfinder" />
     </Router>

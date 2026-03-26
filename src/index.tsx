@@ -138,9 +138,14 @@ export function Route({ href, active, children }: RouteProps) {
  * <Router routes={routes} mode="deferred" />
  * ```
  */
-export function Router({ routes, mode = "deferred", children }: RouterProps) {
+export function Router({
+  routes,
+  mode = "deferred",
+  base = "",
+  children,
+}: RouterProps) {
   const [initial] = useState(() =>
-    resolveMatch(new URL(window.location.href), routes),
+    resolveMatch(new URL(window.location.href), routes, base),
   );
 
   const [activePathname, setActivePathname] = useState<string | null>(
@@ -336,7 +341,7 @@ export function Router({ routes, mode = "deferred", children }: RouterProps) {
       if (!event.canIntercept || event.hashChange) return;
 
       const url = new URL(event.destination.url);
-      const nextMatch = resolveMatch(url, routes);
+      const nextMatch = resolveMatch(url, routes, base);
 
       if (nextMatch === null) return;
 
@@ -356,7 +361,7 @@ export function Router({ routes, mode = "deferred", children }: RouterProps) {
 
     navigation.addEventListener("navigate", handler);
     return () => navigation.removeEventListener("navigate", handler);
-  }, [routes, handleMatch]);
+  }, [routes, base, handleMatch]);
 
   const context = useMemo(
     () => ({
