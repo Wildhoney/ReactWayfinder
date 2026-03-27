@@ -16,7 +16,7 @@ Strongly-typed React router built on the [Navigation API](https://web.dev/blog/b
 4. [Caching](#caching)
 5. [View Transitions](#view-transitions)
 6. [Router Modes](#router-modes)
-7. [Sub-Routes](#sub-routes)
+7. [Nested Routes](#nested-routes)
 
 
 ## Getting Started
@@ -75,7 +75,7 @@ Routes **without** a loader receive `params` and `url`. Routes **with** a loader
 
 ## Navigation State
 
-Wrap any navigable element in `<Route>` to get `active`, `pending`, and `handler`. For `<a>` tags, attach `handler` as `onClick` &mdash; the Navigation API intercepts the click natively, and `handler` marks the instance. For `<button>` elements, `handler` also calls `navigation.navigate()`. Only the element you physically clicked shows `pending: true`:
+Wrap any navigable element in `<Route>` to get `href`, `active`, `pending`, and `handler`. For `<a>` tags, use `href` &mdash; the Navigation API intercepts the click natively. For `<button>` elements, attach `handler` as `onClick` to navigate via `navigation.navigate()`. Every `<Route>` whose `href` matches the navigation destination shows `pending: true` while a loader is running:
 
 ```tsx
 import { Route, useRouter } from "react-wayfinder";
@@ -84,7 +84,7 @@ const router = useRouter();
 
 <Route href={router.url(urls.user, { id: 1 })}>
   {route => (
-    <a href={route.href} onClick={route.handler}>
+    <a href={route.href}>
       User 1 {route.pending ? <Spinner /> : null}
     </a>
   )}
@@ -101,10 +101,10 @@ const router = useRouter();
 
 | Property | Type | Description |
 |---|---|---|
-| `href` | `string` | The resolved URL string |
+| `href` | `string` | The resolved URL string &mdash; use as `href` on `<a>` tags |
 | `active` | `boolean` | `true` if this href matches the currently rendered route |
-| `pending` | `boolean` | `true` if this instance was clicked AND a loader is running |
-| `handler` | `(event?) => void` | Attach as `onClick` &mdash; marks instance, navigates for non-anchors |
+| `pending` | `boolean` | `true` while navigating to this `href` |
+| `handler` | `(event?) => void` | Attach as `onClick` on `<button>` elements &mdash; navigates via the Navigation API |
 
 
 ## Cancellation
@@ -131,13 +131,12 @@ Every loader receives `cache` &mdash; the previously loaded data for that route,
 ```tsx
 async loader({ params, signal, cache }) {
   if (cache) return cache;
-
   const response = await fetch(`/api/users/${params.id}`, { signal });
   return response.json();
 }
 ```
 
-Previously visited routes are preserved in the DOM using React `<Activity>` &mdash; their component state, scroll position, and form inputs survive navigation. The example app's `/feed` route demonstrates this: scroll down to load more items via the infinite loader, navigate away, then come back &mdash; your scroll position and every loaded item are still there.
+Previously visited routes are preserved in the DOM using React [`<Activity>`](https://react.dev/reference/react/Activity) &mdash; their component state, scroll position, and form inputs survive navigation. The example app's `/feed` route demonstrates this: scroll down to load more items via the infinite loader, navigate away, then come back &mdash; your scroll position and every loaded item are still there.
 
 
 ## View Transitions
@@ -195,87 +194,56 @@ const router = useRouter();
 ```
 
 
-## Sub-Routes
+## Nested Routes
 
-Because route matching is flat and first-match, you can model sub-routes by combining a parameterised pattern with more specific patterns listed earlier. For example, a contact page with postal, telephone, and email sections where only postal needs a loader:
+`<Route>` can be nested freely. A top-level navigation bar wraps each link in a `<Route>`, and the page it renders can nest its own `<Route>` instances for sub-navigation. Each `<Route>` independently tracks `active` and `pending` for its own `href`:
 
 ```tsx
-export const urls = {
-  contact: "/contact/:method",
-} as const;
+function Navigation() {
+  const router = useRouter();
 
-const routes = [
-  // Bare /contact redirects to the default sub-route
-  route({
-    url: "/contact",
-    component() {
-      navigation.navigate("/contact/email", { history: "replace" });
-      return null;
-    },
-  }),
+  return (
+    <nav>
+      <Route href={router.url(urls.home)}>
+        {route => <a href={route.href} className={route.active ? "active" : ""}>Home</a>}
+      </Route>
 
-  // Specific sub-route with a loader &mdash; listed before the parameterised catch-all
-  route({
-    url: "/contact/postal",
-    async loader({ signal, cache }) {
-      if (cache) return cache;
-      const response = await fetch("/api/postal-address", { signal });
-      return response.json();
-    },
-    component({ status, data, error }) {
-      switch (status) {
-        case "loading": return <p>Loading address&hellip;</p>;
-        case "error":   return <p>{error.message}</p>;
-        case "ready":   return <PostalDetails address={data.address} />;
-      }
-    },
-  }),
-
-  // Parameterised catch-all for sub-routes without loaders
-  route({
-    url: urls.contact,
-    component({ params }) {
-      return <Contact method={params.method} />;
-    },
-  }),
-] satisfies Routes;
+      <Route href={router.url(urls.contact, { method: "email" })} active={path => path.startsWith("/contact")}>
+        {route => <a href={route.href} className={route.active ? "active" : ""}>Contact</a>}
+      </Route>
+    </nav>
+  );
+}
 ```
 
-The component rendered by each sub-route uses `<Route>` to build its own tab navigation. Because every sub-route renders the same `Contact` shell, the tabs appear on all of them &mdash; and `active` highlights whichever tab matches the current URL:
+The contact page nests a second layer of `<Route>` components for its tab bar. Both layers coexist &mdash; the top-level "Contact" link shows `active` via its custom predicate, while the nested tabs each track their own `active` and `pending` state:
 
 ```tsx
-import { Route, useRouter } from "react-wayfinder";
-
 const methods = ["email", "telephone", "postal"] as const;
 
 function Contact({ method }: { method: string }) {
   const router = useRouter();
 
   return (
-    <nav>
-      {methods.map(value => (
-        <Route key={value} href={router.url(urls.contact, { method: value })}>
-          {route => (
-            <a
-              href={route.href}
-              onClick={route.handler}
-              className={route.active ? "active" : ""}
-            >
-              {value}
-              {route.pending ? <Spinner /> : null}
-            </a>
-          )}
-        </Route>
-      ))}
-    </nav>
+    <>
+      <Navigation />
+      <nav>
+        {methods.map(value => (
+          <Route key={value} href={router.url(urls.contact, { method: value })}>
+            {route => (
+              <a href={route.href} className={route.active ? "active" : ""}>
+                {value}
+                {route.pending ? <Spinner /> : null}
+              </a>
+            )}
+          </Route>
+        ))}
+      </nav>
+    </>
   );
 }
 ```
 
-The key points:
-
-- **Default redirect** &mdash; a bare `/contact` route calls `navigation.navigate()` with `{ history: "replace" }` so the redirect does not create a back-button entry.
-- **Specific before generic** &mdash; `/contact/postal` is listed before `/contact/:method` so it matches first and runs its loader. All other methods fall through to the parameterised route.
-- **Sub-navigation** &mdash; each component renders `<Route>` links for every method. `active` highlights the current tab and `pending` shows a spinner only on the tab that was clicked.
+The top-level navigation uses a custom `active` predicate (`path => path.startsWith("/contact")`) so the "Contact" link stays highlighted regardless of which sub-tab is selected. Each nested `<Route>` uses the default exact match, so only the current tab is active.
 
 

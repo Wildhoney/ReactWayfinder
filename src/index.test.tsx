@@ -202,17 +202,13 @@ describe("Route", () => {
     expect(mockNavigation.navigate).toHaveBeenCalledWith("/users/1");
   });
 
-  it("does not call navigation.navigate for anchor elements", () => {
+  it("calls navigation.navigate when handler is used on a button", () => {
     const routes = [
       {
         url: "/",
         component: () => (
           <Route href="/about">
-            {(route) => (
-              <a href={route.href} onClick={route.handler}>
-                About
-              </a>
-            )}
+            {(route) => <button onClick={route.handler}>About</button>}
           </Route>
         ),
       },
@@ -224,7 +220,7 @@ describe("Route", () => {
       screen.getByText("About").click();
     });
 
-    expect(mockNavigation.navigate).not.toHaveBeenCalled();
+    expect(mockNavigation.navigate).toHaveBeenCalledWith("/about");
   });
 });
 

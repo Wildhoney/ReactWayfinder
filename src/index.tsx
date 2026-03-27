@@ -68,7 +68,7 @@ export function useRouter() {
  * ```tsx
  * <Route href={url("/users/:id", { id: 1 })}>
  *   {route => (
- *     <a href={route.href} onClick={route.handler}>
+ *     <a href={route.href}>
  *       User 1 {route.pending ? <Spinner /> : null}
  *     </a>
  *   )}
@@ -78,6 +78,26 @@ export function useRouter() {
 export function Route({ href, active, children }: RouteProps): ReactElement {
   const context = useContext(Context);
   const [clickedId, setClickedId] = useState<number | null>(null);
+  const wrapperRef = useRef<HTMLSpanElement>(null);
+  const navigationIdRef = useRef(context.navigationId);
+
+  useEffect(() => {
+    navigationIdRef.current = context.navigationId;
+  }, [context.navigationId]);
+
+  useEffect(() => {
+    const element = wrapperRef.current;
+    if (!element) return;
+
+    const handleClick = (event: MouseEvent) => {
+      if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey)
+        return;
+      setClickedId(navigationIdRef.current + 1);
+    };
+
+    element.addEventListener("click", handleClick, true);
+    return () => element.removeEventListener("click", handleClick, true);
+  }, []);
 
   const handler = useCallback(
     (event?: React.MouseEvent) => {
@@ -88,16 +108,9 @@ export function Route({ href, active, children }: RouteProps): ReactElement {
         return;
       }
 
-      setClickedId(context.navigationId + 1);
-
-      const target = event?.currentTarget;
-      const isAnchor = target instanceof HTMLAnchorElement;
-
-      if (!isAnchor) {
-        navigation.navigate(href);
-      }
+      navigation.navigate(href);
     },
-    [context.navigationId, href],
+    [href],
   );
 
   const pending =
@@ -110,14 +123,14 @@ export function Route({ href, active, children }: RouteProps): ReactElement {
     : context.pathname === href;
 
   return (
-    <>
+    <span ref={wrapperRef} style={{ display: "contents" }}>
       {children({
         href,
         active: isActive,
         pending,
         handler,
       })}
-    </>
+    </span>
   );
 }
 

@@ -128,6 +128,26 @@ test.describe("pending spinners", () => {
     await expect(spinner(page, "User 3")).toHaveCount(0);
   });
 
+  test("only the nav spinner shows when clicking a nav link, not the about card", async ({
+    page,
+  }) => {
+    await page.goto("/about");
+    await expect(heading(page)).toHaveText("About");
+
+    // Click User 1 in the nav bar (an <a> tag)
+    await link(page, "User 1").click();
+
+    // Nav spinner should show
+    await expect(spinner(page, "User 1")).toBeVisible();
+
+    // About page card should have exactly 1 span (the name), not 2 (name + spinner)
+    const cardSpans = page
+      .locator("button")
+      .filter({ hasText: "User 1" })
+      .locator("span");
+    await expect(cardSpans).toHaveCount(1);
+  });
+
   test("superseding navigation moves spinner to new target", async ({
     page,
   }) => {

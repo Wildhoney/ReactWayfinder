@@ -19,7 +19,7 @@ export default function Navigation(): ReactElement {
       <Container>
         <Route href={router.url(urls.home)}>
           {(route) => (
-            <A href={route.href} active={route.active} onClick={route.handler}>
+            <A href={route.href} active={route.active}>
               Home
             </A>
           )}
@@ -27,7 +27,7 @@ export default function Navigation(): ReactElement {
 
         <Route href={router.url(urls.about)}>
           {(route) => (
-            <A href={route.href} active={route.active} onClick={route.handler}>
+            <A href={route.href} active={route.active}>
               About
             </A>
           )}
@@ -35,7 +35,7 @@ export default function Navigation(): ReactElement {
 
         <Route href={router.url(urls.feed)}>
           {(route) => (
-            <A href={route.href} active={route.active} onClick={route.handler}>
+            <A href={route.href} active={route.active}>
               Feed
             </A>
           )}
@@ -44,11 +44,7 @@ export default function Navigation(): ReactElement {
         {[1, 2, 3].map((id) => (
           <Route key={id} href={router.url(urls.user, { id })}>
             {(route) => (
-              <A
-                href={route.href}
-                active={route.active}
-                onClick={route.handler}
-              >
+              <A href={route.href} active={route.active}>
                 {names[id] || `User ${id}`} {route.pending ? <Spinner /> : null}
               </A>
             )}
@@ -60,7 +56,7 @@ export default function Navigation(): ReactElement {
           active={(path) => path.startsWith("/contact")}
         >
           {(route) => (
-            <A href={route.href} active={route.active} onClick={route.handler}>
+            <A href={route.href} active={route.active}>
               Contact
             </A>
           )}

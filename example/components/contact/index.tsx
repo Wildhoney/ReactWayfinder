@@ -49,11 +49,7 @@ export default function Contact({
               href={router.url(urls.contact, { method: value })}
             >
               {(route) => (
-                <Tab
-                  href={route.href}
-                  active={route.active}
-                  onClick={route.handler}
-                >
+                <Tab href={route.href} active={route.active}>
                   {label}
                   {value === "postal" && route.pending ? <Spinner /> : null}
                 </Tab>

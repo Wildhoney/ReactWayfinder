@@ -192,7 +192,7 @@ export type RouteState = {
   active: boolean;
   /** `true` if a loader is running AND this instance was clicked. */
   pending: boolean;
-  /** Attach as `onClick` — prevents default for `<a>` tags, navigates via the Navigation API. */
+  /** Attach as `onClick` on non-anchor elements — navigates via the Navigation API and marks this instance as pending. */
   handler: (event?: React.MouseEvent) => void;
 };
 
