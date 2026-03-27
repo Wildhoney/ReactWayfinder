@@ -24,7 +24,7 @@ import type {
   RouteEntry,
   RouteProps,
 } from "./types";
-import { resolveMatch, buildUrl, prefixBase } from "./utils";
+import { resolveMatch, buildUrl, prefixBase, stripBase } from "./utils";
 
 const Context = createContext<RouterContext>({
   status: "idle",
@@ -118,8 +118,11 @@ export function Route({ href, active, children }: RouteProps): ReactElement {
     context.status === "navigating" &&
     context.destination === href;
 
+  const strippedPathname =
+    context.pathname != null ? stripBase(context.pathname, context.base) : null;
+
   const isActive = active
-    ? context.pathname != null && active(context.pathname)
+    ? strippedPathname != null && active(strippedPathname)
     : context.pathname === href;
 
   return (
