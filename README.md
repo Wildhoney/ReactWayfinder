@@ -191,61 +191,44 @@ Use `useRouter()` for navigation status and the base-aware URL builder:
 
 ```tsx
 const router = useRouter();
-// router.status: "idle" | "navigating"
-// router.url(urls.user, { id: 42 }): "/users/42"
+
+router.status
+router.url(urls.user, { id: 42 })
 ```
 
 
 ## Nested Routes
 
-`<Route>` can be nested freely. A top-level navigation bar wraps each link in a `<Route>`, and the page it renders can nest its own `<Route>` instances for sub-navigation. Each `<Route>` independently tracks `active` and `pending` for its own `href`:
+`<Route>` can be nested freely. A top-level navigation bar uses `<Route>` for each link, and the page it renders can nest its own `<Route>` instances for sub-navigation. Each `<Route>` independently tracks `active` and `pending` for its own `href`:
 
 ```tsx
-function Navigation() {
-  const router = useRouter();
-
-  return (
-    <nav>
-      <Route href={router.url(urls.home)}>
-        {route => <a href={route.href} className={route.active ? "active" : ""}>Home</a>}
-      </Route>
-
-      <Route href={router.url(urls.contact, { method: "email" })} active={path => path.startsWith("/contact")}>
-        {route => <a href={route.href} className={route.active ? "active" : ""}>Contact</a>}
-      </Route>
-    </nav>
-  );
-}
-```
-
-The contact page nests a second layer of `<Route>` components for its tab bar. Both layers coexist &mdash; the top-level "Contact" link shows `active` via its custom predicate, while the nested tabs each track their own `active` and `pending` state:
-
-```tsx
-const methods = ["email", "telephone", "postal"] as const;
-
-function Contact({ method }: { method: string }) {
+function Contact() {
   const router = useRouter();
 
   return (
     <>
-      <Navigation />
       <nav>
-        {methods.map(value => (
-          <Route key={value} href={router.url(urls.contact, { method: value })}>
-            {route => (
-              <a href={route.href} className={route.active ? "active" : ""}>
-                {value}
-                {route.pending ? <Spinner /> : null}
-              </a>
-            )}
-          </Route>
-        ))}
+        <Route href={router.url(urls.home)}>
+          {route => <a href={route.href} className={route.active ? "active" : ""}>Home</a>}
+        </Route>
+        <Route href={router.url(urls.contact, { method: "email" })} active={path => path.startsWith("/contact")}>
+          {route => <a href={route.href} className={route.active ? "active" : ""}>Contact</a>}
+        </Route>
+      </nav>
+
+      <nav>
+        <Route href={router.url(urls.contact, { method: "email" })}>
+          {route => <a href={route.href} className={route.active ? "active" : ""}>Email</a>}
+        </Route>
+        <Route href={router.url(urls.contact, { method: "telephone" })}>
+          {route => <a href={route.href} className={route.active ? "active" : ""}>Telephone</a>}
+        </Route>
       </nav>
     </>
   );
 }
 ```
 
-The top-level navigation uses a custom `active` predicate (`path => path.startsWith("/contact")`) so the "Contact" link stays highlighted regardless of which sub-tab is selected. Each nested `<Route>` uses the default exact match, so only the current tab is active.
+The top-level "Contact" link uses a custom `active` predicate so it stays highlighted regardless of which sub-tab is selected. Each nested `<Route>` uses the default exact match.
 
 

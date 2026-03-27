@@ -19,7 +19,7 @@ import type {
   RouteMatch,
   NavigationDirection,
   NavigationStatus,
-  UrlFn,
+  Url,
   RouterContext,
   RouteEntry,
   RouteProps,
@@ -47,11 +47,11 @@ const Context = createContext<RouterContext>({
 export function useRouter() {
   const context = useContext(Context);
 
-  const url: UrlFn = useMemo(() => {
+  const url: Url = useMemo(() => {
     return ((pattern: string, params?: Record<string, string | number>) => {
       const built = params ? buildUrl(pattern, params) : pattern;
       return prefixBase(built, context.base);
-    }) as UrlFn;
+    }) as Url;
   }, [context.base]);
 
   return useMemo(
@@ -162,7 +162,7 @@ export function Router({
     resolveMatch(new URL(window.location.href), routes, base),
   );
 
-  const [activePathname, setActivePathname] = useState<string | null>(
+  const [currentPathname, setCurrentPathname] = useState<string | null>(
     initial ? initial.url.pathname : null,
   );
   const [visited, setVisited] = useState<Map<string, RouteEntry>>(() => {
@@ -188,8 +188,8 @@ export function Router({
 
   const abortController = useRef<AbortController | null>(null);
   const visitedSnapshot = useRef(visited);
-  const activePathnameRef = useRef(activePathname);
-  activePathnameRef.current = activePathname;
+  const activePathname = useRef(currentPathname);
+  activePathname.current = currentPathname;
   visitedSnapshot.current = visited;
 
   const previousPathname = useRef<string | null>(null);
@@ -197,14 +197,14 @@ export function Router({
 
   const transitionTo = useCallback(
     (pathname: string, direction: NavigationDirection = "forward") => {
-      if (activePathnameRef.current) {
-        scrollPositions.current.set(activePathnameRef.current, window.scrollY);
+      if (activePathname.current) {
+        scrollPositions.current.set(activePathname.current, window.scrollY);
       }
 
       document.documentElement.dataset.direction = direction;
 
       const commit = () => {
-        flushSync(() => setActivePathname(pathname));
+        flushSync(() => setCurrentPathname(pathname));
         window.scrollTo(
           0,
           direction === "back"
@@ -213,7 +213,7 @@ export function Router({
         );
       };
 
-      if (document.startViewTransition && activePathnameRef.current) {
+      if (document.startViewTransition && activePathname.current) {
         document.startViewTransition(commit);
       } else {
         commit();
@@ -231,7 +231,7 @@ export function Router({
     delete document.documentElement.dataset.direction;
 
     if (previousPathname.current) {
-      setActivePathname(previousPathname.current);
+      setCurrentPathname(previousPathname.current);
       history.replaceState(null, "", previousPathname.current);
     }
 
@@ -248,7 +248,7 @@ export function Router({
         abortController.current.abort();
       }
 
-      previousPathname.current = activePathnameRef.current;
+      previousPathname.current = activePathname.current;
       const pathname = nextMatch.url.pathname;
 
       const existing = visitedSnapshot.current.get(pathname);
@@ -262,7 +262,7 @@ export function Router({
         setDestination(pathname);
         setNavigationId((id) => id + 1);
 
-        if (mode === "immediate" || !activePathnameRef.current) {
+        if (mode === "immediate" || !activePathname.current) {
           setVisited((previous) => {
             const next = new Map(previous);
             next.set(pathname, {
@@ -273,7 +273,7 @@ export function Router({
             });
             return next;
           });
-          setActivePathname(pathname);
+          setCurrentPathname(pathname);
         }
 
         try {
@@ -381,11 +381,11 @@ export function Router({
     () => ({
       status,
       destination,
-      pathname: activePathname,
+      pathname: currentPathname,
       navigationId,
       base,
     }),
-    [status, destination, activePathname, navigationId, base],
+    [status, destination, currentPathname, navigationId, base],
   );
 
   return (
@@ -406,7 +406,7 @@ export function Router({
         return (
           <Activity
             key={pathname}
-            mode={pathname === activePathname ? "visible" : "hidden"}
+            mode={pathname === currentPathname ? "visible" : "hidden"}
           >
             {render(args)}
           </Activity>

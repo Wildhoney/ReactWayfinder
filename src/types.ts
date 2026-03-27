@@ -162,7 +162,7 @@ export type RouterProps = {
  * <a href={navigate("/users/:id", { id: 42 })}>User 42</a>
  * ```
  */
-export type UrlFn = <T extends string>(
+export type Url = <T extends string>(
   path: T,
   ...args: [ExtractParams<T>] extends [never]
     ? []
