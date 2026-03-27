@@ -2,7 +2,7 @@
 
 <img src="media/logo.png" alt="react-wayfinder" width="500" />
 
-![build](https://github.com/Wildhoney/ReactWayfinder/actions/workflows/ci.yml/badge.svg)
+![build](https://github.com/Wildhoney/Wayfinder/actions/workflows/ci.yml/badge.svg)
 
 Strongly-typed React router built on the [Navigation API](https://web.dev/blog/baseline-navigation-api). No outlets, no nesting &mdash; just routes, loaders, and a URL builder.
 

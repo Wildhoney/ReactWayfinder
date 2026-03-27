@@ -5,7 +5,7 @@ import { resolve } from "path";
 export default defineConfig({
   plugins: [react()],
   root: resolve(__dirname, "example"),
-  base: "/ReactWayfinder/",
+  base: "/Wayfinder/",
   resolve: {
     alias: {
       "react-wayfinder": resolve(__dirname, "src/index.tsx"),
