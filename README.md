@@ -6,6 +6,8 @@
 
 Strongly-typed React router built on the [Navigation API](https://web.dev/blog/baseline-navigation-api). No outlets, no nesting &mdash; just routes, loaders, and a URL builder.
 
+<img src="media/demo.gif" alt="react-wayfinder demo" width="960" />
+
 </div>
 
 ## Table of Contents

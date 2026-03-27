@@ -45,7 +45,7 @@ export const routes = [
     url: "/contact/postal",
     async loader({ signal, cache }) {
       if (cache) return cache as { address: string };
-      await sleep(500 + Math.random() * 1_500, signal);
+      await sleep(500 + Math.random() * 500, signal);
       return { address: "42 Wayfinder Lane, London, EC1A 1BB, United Kingdom" };
     },
     component({ status, data, error }) {
@@ -77,7 +77,7 @@ export const routes = [
     url: urls.post,
     async loader({ params, signal, cache }) {
       if (cache) return cache as { title: string };
-      await sleep(300 + Math.random() * 700, signal);
+      await sleep(500 + Math.random() * 500, signal);
       return { title: `Post #${params.id}` };
     },
     component({ status, params, data, error }) {
@@ -95,7 +95,7 @@ export const routes = [
     url: urls.user,
     async loader({ params, signal, cache }) {
       if (cache) return cache as { name: string; email: string };
-      await sleep(1_000 + Math.random() * 4_000, signal);
+      await sleep(500 + Math.random() * 500, signal);
       return {
         name: `User ${params.id}`,
         email: `user${params.id}@example.com`,
