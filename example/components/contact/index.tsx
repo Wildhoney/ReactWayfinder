@@ -1,4 +1,6 @@
+import type { ReactElement } from "react";
 import { Route, useRouter } from "react-wayfinder";
+import ContactSkeleton from "./skeleton";
 import { urls } from "../../utils";
 import Navigation from "../navigation";
 import type { ContactMethod } from "./types";
@@ -27,7 +29,12 @@ type Props =
   | { method: "postal"; status: "ready"; address: string; error?: undefined }
   | { method: "postal"; status: "error"; address?: undefined; error: Error };
 
-export default function Contact({ method, status, address, error }: Props) {
+export default function Contact({
+  method,
+  status,
+  address,
+  error,
+}: Props): ReactElement {
   const router = useRouter();
 
   return (
@@ -73,12 +80,7 @@ export default function Contact({ method, status, address, error }: Props) {
               </p>
             </>
           )}
-          {method === "postal" && status === "loading" && (
-            <>
-              <h2>Postal</h2>
-              <p>Loading address…</p>
-            </>
-          )}
+          {method === "postal" && status === "loading" && <ContactSkeleton />}
           {method === "postal" && status === "error" && (
             <>
               <h2>Postal</h2>

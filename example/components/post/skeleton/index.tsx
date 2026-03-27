@@ -1,9 +1,10 @@
+import type { ReactElement } from "react";
 import { Skeleton } from "antd";
 import Navigation from "../../navigation";
 import { Page, HeroPlaceholder } from "./styles";
 
 /** Placeholder skeleton shown while the post detail loader is in flight. */
-export default function PostSkeleton() {
+export default function PostSkeleton(): ReactElement {
   return (
     <>
       <Navigation />

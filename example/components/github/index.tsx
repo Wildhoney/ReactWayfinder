@@ -1,7 +1,8 @@
+import type { ReactElement } from "react";
 import { Corner } from "./styles";
 
 /** Fixed GitHub octocat corner link that points to the project repository. */
-export default function GithubCorner({ href }: { href: string }) {
+export default function GithubCorner({ href }: { href: string }): ReactElement {
   return (
     <Corner href={href} target="_blank" aria-label="View source on GitHub">
       <svg viewBox="0 0 250 250" aria-hidden="true">

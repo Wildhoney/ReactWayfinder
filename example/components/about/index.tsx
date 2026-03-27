@@ -1,3 +1,4 @@
+import type { ReactElement } from "react";
 import { Route, useRouter } from "react-wayfinder";
 import { urls } from "../../utils";
 import { useNames } from "../names";
@@ -6,7 +7,7 @@ import { Page, Profiles, Card, Avatar } from "./styles";
 import { Spinner } from "../../styles";
 
 /** Static about page with navigable team member cards. Has no loader so it renders instantly. */
-export default function About() {
+export default function About(): ReactElement {
   const router = useRouter();
   const { names } = useNames();
 

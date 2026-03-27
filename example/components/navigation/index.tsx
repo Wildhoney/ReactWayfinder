@@ -1,3 +1,4 @@
+import type { ReactElement } from "react";
 import { Route, useRouter } from "react-wayfinder";
 import type { RouterMode } from "react-wayfinder";
 import { urls } from "../../utils";
@@ -8,7 +9,7 @@ import { Container, A } from "./styles";
 import { Spinner } from "../../styles";
 
 /** Top-level navigation bar with route links, per-link pending spinners, and a mode switcher. */
-export default function Navigation() {
+export default function Navigation(): ReactElement {
   const router = useRouter();
   const { mode, setMode } = useMode();
   const { names } = useNames();

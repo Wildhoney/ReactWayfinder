@@ -4,6 +4,7 @@ import {
   useContext,
   useMemo,
   useState,
+  type ReactElement,
 } from "react";
 import type { NamesContext } from "./types";
 
@@ -13,7 +14,11 @@ const Context = createContext<NamesContext>({
 });
 
 /** Provides a shared map of user display name overrides to descendant components. */
-export function NamesProvider({ children }: { children: React.ReactNode }) {
+export function NamesProvider({
+  children,
+}: {
+  children: React.ReactNode;
+}): ReactElement {
   const [names, setNames] = useState<Record<string, string>>({});
 
   const setName = useCallback((id: string, name: string) => {

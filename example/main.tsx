@@ -1,3 +1,4 @@
+import type { ReactElement } from "react";
 import { createRoot } from "react-dom/client";
 import { Router } from "react-wayfinder";
 
@@ -8,7 +9,7 @@ import Progress from "./components/progress";
 import GithubCorner from "./components/github";
 
 /** Root application component that renders the router with the current mode. */
-function App() {
+function App(): ReactElement {
   const { mode } = useMode();
 
   return (

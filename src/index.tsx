@@ -7,6 +7,7 @@ import {
   useCallback,
   useMemo,
   useRef,
+  type ReactElement,
 } from "react";
 import { flushSync } from "react-dom";
 import type {
@@ -74,7 +75,7 @@ export function useRouter() {
  * </Route>
  * ```
  */
-export function Route({ href, active, children }: RouteProps) {
+export function Route({ href, active, children }: RouteProps): ReactElement {
   const context = useContext(Context);
   const [clickedId, setClickedId] = useState<number | null>(null);
 
@@ -140,7 +141,7 @@ export function Router({
   mode = "deferred",
   base = "",
   children,
-}: RouterProps) {
+}: RouterProps): ReactElement {
   const [initial] = useState(() =>
     resolveMatch(new URL(window.location.href), routes, base),
   );

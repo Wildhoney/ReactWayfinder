@@ -1,9 +1,10 @@
+import type { ReactElement } from "react";
 import Navigation from "../navigation";
 import { Page, Hero, Body } from "./styles";
 import type { Props } from "./types";
 
 /** Detail page for a single feed post, showing a coloured hero and body text. */
-export default function Post({ id, title }: Props) {
+export default function Post({ id, title }: Props): ReactElement {
   const hue = (Number(id) * 47) % 360;
 
   return (

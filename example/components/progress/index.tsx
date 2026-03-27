@@ -1,10 +1,10 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, type ReactElement } from "react";
 import { useNProgress } from "@tanem/react-nprogress";
 import { useRouter } from "react-wayfinder";
 import { Container, Bar, Peg } from "./styles";
 
 /** Top-of-page progress bar that animates while any navigation loader is running. */
-export default function Progress() {
+export default function Progress(): ReactElement {
   const router = useRouter();
   const [mounted, setMounted] = useState(false);
 
