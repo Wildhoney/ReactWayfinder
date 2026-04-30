@@ -14,11 +14,13 @@ Strongly-typed React router built on the [Navigation API](https://web.dev/blog/b
 
 1. [Getting Started](#getting-started)
 2. [Navigation State](#navigation-state)
-3. [Cancellation](#cancellation)
-4. [Caching](#caching)
-5. [View Transitions](#view-transitions)
-6. [Router Modes](#router-modes)
-7. [Nested Routes](#nested-routes)
+3. [Programmatic Navigation](#programmatic-navigation)
+4. [Redirects](#redirects)
+5. [Cancellation](#cancellation)
+6. [Caching](#caching)
+7. [View Transitions](#view-transitions)
+8. [Router Modes](#router-modes)
+9. [Nested Routes](#nested-routes)
 
 
 ## Getting Started
@@ -48,7 +50,7 @@ import type { Routes } from "react-wayfinder";
 const routes = [
   route({
     url: urls.home,
-    component() {
+    match() {
       return <h1>Home</h1>;
     },
   }),
@@ -57,7 +59,7 @@ const routes = [
     async loader({ params, signal }) {
       return fetchUser(params.id, { signal });
     },
-    component({ status, params, data, error }) {
+    match({ status, params, data, error }) {
       switch (status) {
         case "loading": return <p>Loading&hellip;</p>;
         case "error":   return <p>{error.message}</p>;
@@ -72,7 +74,7 @@ createRoot(document.getElementById("root")!).render(
 );
 ```
 
-Routes **without** a loader receive `params` and `url`. Routes **with** a loader receive a discriminated union &mdash; narrow `data` via `status` (`"loading"`, `"ready"`, `"error"`). Use `"*"` as a catch-all for unmatched routes.
+Routes **without** a loader receive `params`, `url`, and `router`. Routes **with** a loader additionally receive a discriminated union &mdash; narrow `data` via `status` (`"loading"`, `"ready"`, `"error"`). Use `"*"` as a catch-all for unmatched routes. The `router` argument is the same handle returned by `useRouter()` &mdash; useful when you need type-safe URL building or programmatic navigation outside of a hook context.
 
 
 ## Navigation State
@@ -107,6 +109,50 @@ const router = useRouter();
 | `active` | `boolean` | `true` if this href matches the currently rendered route |
 | `pending` | `boolean` | `true` while navigating to this `href` |
 | `handler` | `(event?) => void` | Attach as `onClick` on `<button>` elements &mdash; navigates via the Navigation API |
+
+Pass `replace` to `<Route>` to replace the current history entry instead of pushing a new one. This works for both `<a>` clicks and `handler` invocations:
+
+```tsx
+<Route href={router.url(urls.login)} replace>
+  {route => <a href={route.href}>Sign in</a>}
+</Route>
+```
+
+
+## Programmatic Navigation
+
+`useRouter()` returns a `navigate(href, options?)` function for navigating outside of a `<Route>`. Pair it with the `url()` builder to keep URLs type-safe:
+
+```tsx
+const router = useRouter();
+
+router.navigate(router.url(urls.user, { id: 1 }));               // push
+router.navigate(router.url(urls.login), { replace: true });      // replace
+```
+
+The same `router` handle is passed to every route's `match` and `redirect` callback &mdash; so you can navigate type-safely from places where hooks aren't available.
+
+
+## Redirects
+
+A route with a `redirect` prop replaces the current history entry with the resolved target instead of rendering anything. Use it as a catch-all or to canonicalise an incomplete URL:
+
+```tsx
+const routes = [
+  route({
+    url: urls.cat,
+    match({ params }) {
+      return <Viewer index={Number(params.index)} />;
+    },
+  }),
+  route({
+    url: "*",
+    redirect: ({ router }) => router.url(urls.cat, { index: 0 }),
+  }),
+] satisfies Routes;
+```
+
+`redirect` accepts either a string or a callback receiving `{ params, url, router }`. The callback form gives you access to the type-safe `router.url()` builder so you don't have to hard-code paths. Redirects always replace the current history entry &mdash; the browser back button skips past the redirected-from URL.
 
 
 ## Cancellation

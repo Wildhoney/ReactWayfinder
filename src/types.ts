@@ -62,17 +62,25 @@ export type RouteEntry = {
 
 type Loader<T extends string> = (args: LoaderArgs<T>) => unknown;
 
+/** Router handle passed to `match` and `redirect` — the same shape as `useRouter()`. */
+export type RouterHandle = {
+  status: NavigationStatus;
+  url: Url;
+  navigate: Navigate;
+};
+
 /**
  * A route definition with an async loader.
- * The loader's return type flows into the `component`'s `data` argument.
+ * The loader's return type flows into the `match`'s `data` argument.
  *
  * @typeParam T - URL pattern literal (e.g. `"/users/:id"`)
  * @typeParam L - Loader function type, inferred automatically
  */
-/** Discriminated union for component args when a loader is present. */
+/** Discriminated union for `match` args when a loader is present. */
 export type LoaderComponentArgs<T extends string, D> =
   | {
       params: ParamsFor<T>;
+      router: RouterHandle;
       status: "loading";
       data: undefined;
       error: undefined;
@@ -80,6 +88,7 @@ export type LoaderComponentArgs<T extends string, D> =
     }
   | {
       params: ParamsFor<T>;
+      router: RouterHandle;
       status: "ready";
       data: D;
       error: undefined;
@@ -87,6 +96,7 @@ export type LoaderComponentArgs<T extends string, D> =
     }
   | {
       params: ParamsFor<T>;
+      router: RouterHandle;
       status: "error";
       data: undefined;
       error: Error;
@@ -99,12 +109,13 @@ export type PathWithLoader<
 > = {
   /** URL pattern with `:param` segments (e.g. `"/users/:id"`). */
   url: T;
-  /** Async data fetcher — its return type is passed as `data` to `component`. */
+  /** Async data fetcher — its return type is passed as `data` to `match`. */
   loader: L;
   /** Render function called with `"loading"`, `"ready"`, or `"error"` status. Narrow `data` via `status`. */
-  component: (
+  match: (
     args: LoaderComponentArgs<T, Awaited<ReturnType<L>>>,
   ) => React.ReactNode;
+  redirect?: undefined;
 };
 
 /**
@@ -115,13 +126,43 @@ export type PathWithLoader<
 export type PathWithoutLoader<T extends string = string> = {
   /** URL pattern with `:param` segments (e.g. `"/about"`). */
   url: T;
-  /** Render function receiving typed `params` and `url`. */
-  component: (args: { params: ParamsFor<T>; url: URL }) => React.ReactNode;
+  /** Render function receiving typed `params`, `url`, and the `router` handle. */
+  match: (args: {
+    params: ParamsFor<T>;
+    router: RouterHandle;
+    url: URL;
+  }) => React.ReactNode;
+  loader?: undefined;
+  redirect?: undefined;
+};
+
+/** Arguments passed to a `redirect` callback. */
+export type RedirectArgs<T extends string = string> = {
+  params: ParamsFor<T>;
+  router: RouterHandle;
+  url: URL;
+};
+
+/**
+ * A redirect-only route. Resolves to a target href and replaces the current
+ * history entry — no component is rendered.
+ *
+ * @typeParam T - URL pattern literal
+ */
+export type PathWithRedirect<T extends string = string> = {
+  url: T;
+  /** Target href (string) or callback returning the target href. Always replaces the current history entry. */
+  redirect: string | ((args: RedirectArgs<T>) => string);
+  match?: undefined;
   loader?: undefined;
 };
 
 /** Component args for a route without a loader. */
-type StaticComponentArgs = { params: Params; url: URL };
+type StaticComponentArgs = {
+  params: Params;
+  router: RouterHandle;
+  url: URL;
+};
 
 /** Component args for a route with a loader. */
 type LoadedComponentArgs = LoaderComponentArgs<string, unknown>;
@@ -129,10 +170,9 @@ type LoadedComponentArgs = LoaderComponentArgs<string, unknown>;
 /** Type-erased route used internally by the {@link Router}. */
 export type Path = {
   url: string;
-  component: (
-    args: StaticComponentArgs | LoadedComponentArgs,
-  ) => React.ReactNode;
+  match?: (args: StaticComponentArgs | LoadedComponentArgs) => React.ReactNode;
   loader?: (args: LoaderArgs) => unknown;
+  redirect?: string | ((args: RedirectArgs) => string);
 };
 
 /** Array of route definitions — use with `satisfies Routes` for type-safe route configs. */
@@ -168,6 +208,15 @@ export type Url = <T extends string>(
     ? []
     : [Record<ExtractParams<T>, string | number>]
 ) => string;
+
+/** Options accepted by {@link Navigate}. */
+export type NavigateOptions = {
+  /** Replace the current history entry instead of pushing a new one. @default false */
+  replace?: boolean;
+};
+
+/** Programmatic navigation function — accepts a resolved href and an optional `replace` flag. */
+export type Navigate = (href: string, options?: NavigateOptions) => void;
 
 /** Current navigation status — `"idle"` or `"navigating"` while a loader is running. */
 export type NavigationStatus = "idle" | "navigating";
@@ -205,6 +254,8 @@ export type RouteProps = {
   href: string;
   /** Custom predicate for when this route should be marked active. Falls back to exact href match. */
   active?: (url: string) => boolean;
+  /** Replace the current history entry instead of pushing a new one when this route is activated. @default false */
+  replace?: boolean;
   /** Render-prop receiving navigation state for this href. */
   children: RouteChildren;
 };

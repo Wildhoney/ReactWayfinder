@@ -24,22 +24,19 @@ export const urls = {
 export const routes = [
   route({
     url: urls.home,
-    component() {
+    match() {
       return <Home />;
     },
   }),
   route({
     url: urls.about,
-    component() {
+    match() {
       return <About />;
     },
   }),
   route({
     url: "/contact",
-    component() {
-      navigation.navigate("/contact/email", { history: "replace" });
-      return null;
-    },
+    redirect: ({ router }) => router.url(urls.contact, { method: "email" }),
   }),
   route({
     url: "/contact/postal",
@@ -48,7 +45,7 @@ export const routes = [
       await sleep(500 + Math.random() * 500, signal);
       return { address: "42 Wayfinder Lane, London, EC1A 1BB, United Kingdom" };
     },
-    component({ status, data, error }) {
+    match({ status, data, error }) {
       switch (status) {
         case "loading":
           return <Contact method="postal" status="loading" />;
@@ -63,13 +60,13 @@ export const routes = [
   }),
   route({
     url: urls.contact,
-    component({ params }) {
+    match({ params }) {
       return <Contact method={params.method as "email" | "telephone"} />;
     },
   }),
   route({
     url: urls.feed,
-    component() {
+    match() {
       return <Feed />;
     },
   }),
@@ -80,7 +77,7 @@ export const routes = [
       await sleep(500 + Math.random() * 500, signal);
       return { title: `Post #${params.id}` };
     },
-    component({ status, params, data, error }) {
+    match({ status, params, data, error }) {
       switch (status) {
         case "loading":
           return <PostSkeleton />;
@@ -101,7 +98,7 @@ export const routes = [
         email: `user${params.id}@example.com`,
       };
     },
-    component({ status, params, data, error }) {
+    match({ status, params, data, error }) {
       switch (status) {
         case "loading":
           return <UserSkeleton />;
@@ -116,7 +113,7 @@ export const routes = [
   }),
   route({
     url: "*",
-    component() {
+    match() {
       return <NotFound />;
     },
   }),

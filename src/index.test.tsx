@@ -40,7 +40,7 @@ describe("useRouter().url()", () => {
   }
 
   function renderWithRouter(element: React.ReactNode, base = "") {
-    const routes = [{ url: "/", component: () => element }];
+    const routes = [{ url: "/", match: () => element }];
     return render(<Router routes={routes} base={base} />);
   }
 
@@ -88,14 +88,14 @@ describe("useRouter().url()", () => {
 
 describe("Router", () => {
   it("renders the matched route component", () => {
-    const routes = [{ url: "/", component: () => <h1>Home</h1> }];
+    const routes = [{ url: "/", match: () => <h1>Home</h1> }];
 
     render(<Router routes={routes} />);
     expect(screen.getByText("Home")).toBeDefined();
   });
 
   it("renders nothing when no route matches", () => {
-    const routes = [{ url: "/about", component: () => <h1>About</h1> }];
+    const routes = [{ url: "/about", match: () => <h1>About</h1> }];
 
     const { container } = render(<Router routes={routes} />);
     expect(container.querySelector("h1")).toBeNull();
@@ -108,8 +108,8 @@ describe("Router", () => {
     });
 
     const routes = [
-      { url: "/", component: () => <h1>Home</h1> },
-      { url: "*", component: () => <h1>404</h1> },
+      { url: "/", match: () => <h1>Home</h1> },
+      { url: "*", match: () => <h1>404</h1> },
     ];
 
     render(<Router routes={routes} />);
@@ -122,7 +122,7 @@ describe("Router", () => {
   });
 
   it("renders children alongside route content", () => {
-    const routes = [{ url: "/", component: () => <h1>Home</h1> }];
+    const routes = [{ url: "/", match: () => <h1>Home</h1> }];
 
     render(
       <Router routes={routes}>
@@ -133,6 +133,55 @@ describe("Router", () => {
     expect(screen.getByTestId("progress")).toBeDefined();
     expect(screen.getByText("Home")).toBeDefined();
   });
+
+  it("redirects on initial mount via the redirect prop", () => {
+    Object.defineProperty(window, "location", {
+      value: { href: "http://localhost/cats" },
+      writable: true,
+    });
+
+    const routes = [
+      { url: "/cats/:index", match: () => <h1>Cat</h1> },
+      { url: "*", redirect: "/cats/0" },
+    ];
+
+    const { container } = render(<Router routes={routes} />);
+    expect(mockNavigation.navigate).toHaveBeenCalledWith("/cats/0", {
+      history: "replace",
+    });
+    expect(container.querySelector("h1")).toBeNull();
+
+    Object.defineProperty(window, "location", {
+      value: { href: "http://localhost/" },
+      writable: true,
+    });
+  });
+
+  it("redirect callback receives router for type-safe navigation", () => {
+    Object.defineProperty(window, "location", {
+      value: { href: "http://localhost/cats" },
+      writable: true,
+    });
+
+    const routes = [
+      { url: "/cats/:index", match: () => <h1>Cat</h1> },
+      {
+        url: "*",
+        redirect: ({ router }: { router: { url: (p: string) => string } }) =>
+          router.url("/cats/0"),
+      },
+    ];
+
+    render(<Router routes={routes} />);
+    expect(mockNavigation.navigate).toHaveBeenCalledWith("/cats/0", {
+      history: "replace",
+    });
+
+    Object.defineProperty(window, "location", {
+      value: { href: "http://localhost/" },
+      writable: true,
+    });
+  });
 });
 
 describe("Route", () => {
@@ -140,7 +189,7 @@ describe("Route", () => {
     const routes = [
       {
         url: "/",
-        component: () => (
+        match: () => (
           <Route href="/about">
             {(route) => (
               <a href={route.href} data-active={route.active}>
@@ -163,7 +212,7 @@ describe("Route", () => {
     const routes = [
       {
         url: "/",
-        component: () => (
+        match: () => (
           <Route href="/">
             {(route) => (
               <a href={route.href} data-active={String(route.active)}>
@@ -185,7 +234,7 @@ describe("Route", () => {
     const routes = [
       {
         url: "/",
-        component: () => (
+        match: () => (
           <Route href="/users/1">
             {(route) => <button onClick={route.handler}>Go</button>}
           </Route>
@@ -199,14 +248,16 @@ describe("Route", () => {
       screen.getByText("Go").click();
     });
 
-    expect(mockNavigation.navigate).toHaveBeenCalledWith("/users/1");
+    expect(mockNavigation.navigate).toHaveBeenCalledWith("/users/1", {
+      history: "auto",
+    });
   });
 
   it("calls navigation.navigate when handler is used on a button", () => {
     const routes = [
       {
         url: "/",
-        component: () => (
+        match: () => (
           <Route href="/about">
             {(route) => <button onClick={route.handler}>About</button>}
           </Route>
@@ -220,7 +271,72 @@ describe("Route", () => {
       screen.getByText("About").click();
     });
 
-    expect(mockNavigation.navigate).toHaveBeenCalledWith("/about");
+    expect(mockNavigation.navigate).toHaveBeenCalledWith("/about", {
+      history: "auto",
+    });
+  });
+
+  it("uses history: replace when replace prop is set", () => {
+    const routes = [
+      {
+        url: "/",
+        match: () => (
+          <Route href="/login" replace>
+            {(route) => <button onClick={route.handler}>Login</button>}
+          </Route>
+        ),
+      },
+    ];
+
+    render(<Router routes={routes} />);
+
+    act(() => {
+      screen.getByText("Login").click();
+    });
+
+    expect(mockNavigation.navigate).toHaveBeenCalledWith("/login", {
+      history: "replace",
+    });
+  });
+});
+
+describe("useRouter().navigate()", () => {
+  it("pushes by default", () => {
+    function Trigger() {
+      const router = useRouter();
+      return <button onClick={() => router.navigate("/users/1")}>Go</button>;
+    }
+    const routes = [{ url: "/", match: () => <Trigger /> }];
+
+    render(<Router routes={routes} />);
+    act(() => {
+      screen.getByText("Go").click();
+    });
+
+    expect(mockNavigation.navigate).toHaveBeenCalledWith("/users/1", {
+      history: "auto",
+    });
+  });
+
+  it("replaces when { replace: true } is passed", () => {
+    function Trigger() {
+      const router = useRouter();
+      return (
+        <button onClick={() => router.navigate("/login", { replace: true })}>
+          Sign in
+        </button>
+      );
+    }
+    const routes = [{ url: "/", match: () => <Trigger /> }];
+
+    render(<Router routes={routes} />);
+    act(() => {
+      screen.getByText("Sign in").click();
+    });
+
+    expect(mockNavigation.navigate).toHaveBeenCalledWith("/login", {
+      history: "replace",
+    });
   });
 });
 
@@ -231,7 +347,7 @@ describe("useRouter", () => {
       return <span data-testid="status">{router.status}</span>;
     }
 
-    const routes = [{ url: "/", component: () => <Status /> }];
+    const routes = [{ url: "/", match: () => <Status /> }];
 
     render(<Router routes={routes} />);
     expect(screen.getByTestId("status").textContent).toBe("idle");

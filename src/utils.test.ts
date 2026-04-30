@@ -102,9 +102,9 @@ describe("buildUrl", () => {
 
 describe("resolveMatch", () => {
   const routes = [
-    { url: "/", component: () => null },
-    { url: "/users/:id", component: () => null },
-    { url: "*", component: () => null },
+    { url: "/", match: () => null },
+    { url: "/users/:id", match: () => null },
+    { url: "*", match: () => null },
   ];
 
   it("matches the first matching route", () => {

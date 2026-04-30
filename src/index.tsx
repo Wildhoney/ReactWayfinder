@@ -14,13 +14,16 @@ import type {
   Path,
   PathWithLoader,
   PathWithoutLoader,
+  PathWithRedirect,
   LoaderArgs,
   RouterProps,
   RouteMatch,
   NavigationDirection,
   NavigationStatus,
   Url,
+  Navigate,
   RouterContext,
+  RouterHandle,
   RouteEntry,
   RouteProps,
 } from "./types";
@@ -35,16 +38,19 @@ const Context = createContext<RouterContext>({
 });
 
 /**
- * Access navigation status and the base-aware URL builder.
+ * Access navigation status, the base-aware URL builder, and a programmatic
+ * `navigate(href, { replace })` function.
  *
  * @example
  * ```tsx
  * const router = useRouter();
  * <a href={router.url("/users/:id", { id: 42 })}>User 42</a>
- * <ProgressBar isAnimating={router.status === "navigating"} />
+ * <button onClick={() => router.navigate(router.url("/login"), { replace: true })}>
+ *   Sign in
+ * </button>
  * ```
  */
-export function useRouter() {
+export function useRouter(): RouterHandle {
   const context = useContext(Context);
 
   const url: Url = useMemo(() => {
@@ -54,15 +60,24 @@ export function useRouter() {
     }) as Url;
   }, [context.base]);
 
+  const navigate: Navigate = useCallback((href, options) => {
+    window.navigation.navigate(href, {
+      history: options?.replace ? "replace" : "auto",
+    });
+  }, []);
+
   return useMemo(
-    () => ({ status: context.status, url }),
-    [context.status, url],
+    () => ({ status: context.status, url, navigate }),
+    [context.status, url, navigate],
   );
 }
 
 /**
  * Render-prop component scoped to a single href. Provides `active` and
  * `pending` state so only the element the user clicked shows a spinner.
+ *
+ * Pass `replace` to navigate by replacing the current history entry instead
+ * of pushing a new one — useful for canonicalisation and login redirects.
  *
  * @example
  * ```tsx
@@ -75,7 +90,12 @@ export function useRouter() {
  * </Route>
  * ```
  */
-export function Route({ href, active, children }: RouteProps): ReactElement {
+export function Route({
+  href,
+  active,
+  replace,
+  children,
+}: RouteProps): ReactElement {
   const context = useContext(Context);
   const [clickedId, setClickedId] = useState<number | null>(null);
   const wrapperRef = useRef<HTMLSpanElement>(null);
@@ -93,11 +113,16 @@ export function Route({ href, active, children }: RouteProps): ReactElement {
       if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey)
         return;
       setClickedId(navigationIdRef.current + 1);
+
+      if (replace) {
+        event.preventDefault();
+        window.navigation.navigate(href, { history: "replace" });
+      }
     };
 
     element.addEventListener("click", handleClick, true);
     return () => element.removeEventListener("click", handleClick, true);
-  }, []);
+  }, [href, replace]);
 
   const handler = useCallback(
     (event?: React.MouseEvent) => {
@@ -108,9 +133,11 @@ export function Route({ href, active, children }: RouteProps): ReactElement {
         return;
       }
 
-      navigation.navigate(href);
+      window.navigation.navigate(href, {
+        history: replace ? "replace" : "auto",
+      });
     },
-    [href],
+    [href, replace],
   );
 
   const pending =
@@ -162,12 +189,14 @@ export function Router({
     resolveMatch(new URL(window.location.href), routes, base),
   );
 
+  const isInitialRedirect = !!initial?.route.redirect;
+
   const [currentPathname, setCurrentPathname] = useState<string | null>(
-    initial ? initial.url.pathname : null,
+    initial && !isInitialRedirect ? initial.url.pathname : null,
   );
   const [visited, setVisited] = useState<Map<string, RouteEntry>>(() => {
     const map = new Map<string, RouteEntry>();
-    if (initial) {
+    if (initial && !isInitialRedirect) {
       map.set(initial.url.pathname, {
         match: initial,
         data: undefined,
@@ -194,6 +223,52 @@ export function Router({
 
   const previousPathname = useRef<string | null>(null);
   const scrollPositions = useRef<Map<string, number>>(new Map());
+
+  const baseRef = useRef(base);
+  baseRef.current = base;
+
+  const url: Url = useMemo(() => {
+    return ((pattern: string, params?: Record<string, string | number>) => {
+      const built = params ? buildUrl(pattern, params) : pattern;
+      return prefixBase(built, base);
+    }) as Url;
+  }, [base]);
+
+  const navigate: Navigate = useCallback((href, options) => {
+    window.navigation.navigate(href, {
+      history: options?.replace ? "replace" : "auto",
+    });
+  }, []);
+
+  const buildRouterHandle = useCallback(
+    (currentStatus: NavigationStatus): RouterHandle => ({
+      status: currentStatus,
+      url,
+      navigate,
+    }),
+    [url, navigate],
+  );
+
+  const performRedirect = useCallback(
+    (match: RouteMatch) => {
+      const definition = match.route.redirect;
+      if (!definition) return;
+
+      const target =
+        typeof definition === "function"
+          ? definition({
+              params: match.params,
+              router: buildRouterHandle("navigating"),
+              url: match.url,
+            })
+          : definition;
+
+      window.navigation.navigate(prefixBase(target, baseRef.current), {
+        history: "replace",
+      });
+    },
+    [buildRouterHandle],
+  );
 
   const transitionTo = useCallback(
     (pathname: string, direction: NavigationDirection = "forward") => {
@@ -244,6 +319,11 @@ export function Router({
       nextMatch: RouteMatch,
       direction: NavigationDirection = "forward",
     ) => {
+      if (nextMatch.route.redirect) {
+        performRedirect(nextMatch);
+        return;
+      }
+
       if (abortController.current) {
         abortController.current.abort();
       }
@@ -333,11 +413,15 @@ export function Router({
         setDestination(null);
       }
     },
-    [mode, transitionTo],
+    [mode, transitionTo, performRedirect],
   );
 
   useEffect(() => {
-    if (initial?.route.loader) handleMatch(initial);
+    if (initial?.route.redirect) {
+      performRedirect(initial);
+    } else if (initial?.route.loader) {
+      handleMatch(initial);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -361,7 +445,7 @@ export function Router({
 
       const direction =
         event.navigationType === "traverse" &&
-        event.destination.index < (navigation.currentEntry?.index ?? 0)
+        event.destination.index < (window.navigation.currentEntry?.index ?? 0)
           ? ("back" as const)
           : ("forward" as const);
 
@@ -373,8 +457,8 @@ export function Router({
       });
     };
 
-    navigation.addEventListener("navigate", handler);
-    return () => navigation.removeEventListener("navigate", handler);
+    window.navigation.addEventListener("navigate", handler);
+    return () => window.navigation.removeEventListener("navigate", handler);
   }, [routes, base, handleMatch]);
 
   const context = useMemo(
@@ -388,20 +472,32 @@ export function Router({
     [status, destination, currentPathname, navigationId, base],
   );
 
+  const routerHandle = useMemo(
+    () => buildRouterHandle(status),
+    [buildRouterHandle, status],
+  );
+
   return (
     <Context.Provider value={context}>
       {children}
       {Array.from(visited.entries()).map(([pathname, entry]) => {
-        const render = entry.match.route.component;
+        const render = entry.match.route.match;
+        if (!render) return null;
+
         const args = entry.match.route.loader
           ? {
               params: entry.match.params,
+              router: routerHandle,
               status: entry.status,
               data: entry.data,
               error: entry.error,
               url: entry.match.url,
             }
-          : { params: entry.match.params, url: entry.match.url };
+          : {
+              params: entry.match.params,
+              router: routerHandle,
+              url: entry.match.url,
+            };
 
         return (
           <Activity
@@ -418,7 +514,7 @@ export function Router({
 
 /**
  * Define a strongly-typed route. Infers param types from the URL pattern
- * and loader return type for the `data` argument in `component`.
+ * and loader return type for the `data` argument in `match`.
  *
  * @example
  * ```tsx
@@ -427,11 +523,16 @@ export function Router({
  *   async loader({ params, signal }) {
  *     return await fetchUser(params.id, { signal });
  *   },
- *   component({ status, params, data }) {
+ *   match({ status, params, data }) {
  *     if (status === "loading") return <Skeleton />;
  *     if (status === "error") return <Error />;
  *     return <User id={params.id} name={data.name} />;
  *   },
+ * })
+ *
+ * route({
+ *   url: "/cats",
+ *   redirect: ({ router }) => router.url("/cats/:index", { index: 0 }),
  * })
  * ```
  */
@@ -440,7 +541,10 @@ export function route<
   L extends (args: LoaderArgs<T>) => unknown,
 >(definition: PathWithLoader<T, L>): Path;
 export function route<T extends string>(definition: PathWithoutLoader<T>): Path;
-export function route(definition: PathWithLoader | PathWithoutLoader): Path {
+export function route<T extends string>(definition: PathWithRedirect<T>): Path;
+export function route(
+  definition: PathWithLoader | PathWithoutLoader | PathWithRedirect,
+): Path {
   return definition as Path;
 }
 
@@ -450,4 +554,7 @@ export type {
   RouterContext,
   RouterMode,
   Routes,
+  RouterHandle,
+  Navigate,
+  NavigateOptions,
 } from "./types";

@@ -17,7 +17,7 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsc && vite build && vite build --config vite.example.config.ts",
+    "build": "vite build && tsc && vite build --config vite.example.config.ts",
     "dev": "vite",
     "fmt": "prettier --write src/ example/",
     "lint": "eslint src/",
@@ -75,6 +75,7 @@
   },
   "dependencies": {
     "@tanem/react-nprogress": "^6.0.3",
+    "@types/dom-navigation": "^1.0.7",
     "antd": "^6.3.4"
   }
 }
