@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [0.1.0](https://github.com/Wildhoney/ReactWayfinder/compare/v0.0.4...v0.1.0) (2026-04-30)
+
+
+### ⚠ BREAKING CHANGES
+
+* add redirect prop and replace-mode navigation, rename component to match, pass router handle to callbacks
+
+### Features
+
+* add redirect prop and replace-mode navigation, rename component to match, pass router handle to callbacks ([c9fd8b6](https://github.com/Wildhoney/ReactWayfinder/commit/c9fd8b6d335ca027f01d0b186951be0b583be45f))
+
+
+### Bug Fixes
+
+* strip base path before passing pathname to Route active predicate ([52190ec](https://github.com/Wildhoney/ReactWayfinder/commit/52190ec1973fd4b5567aa8cd0b40248f1206ab90))
+* update base path and badge URL for Wayfinder rename ([264570d](https://github.com/Wildhoney/ReactWayfinder/commit/264570debe565c4ca01c46568ac15ac0b70b6cd5))
+
 ## [0.0.4](https://github.com/Wildhoney/ReactWayfinder/compare/v0.0.3...v0.0.4) (2026-03-27)
 
 
