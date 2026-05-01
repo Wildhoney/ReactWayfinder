@@ -23,7 +23,7 @@ import type {
   Url,
   Navigate,
   RouterContext,
-  RouterHandle,
+  Router as Handle,
   RouteEntry,
   RouteProps,
 } from "./types";
@@ -50,7 +50,7 @@ const Context = createContext<RouterContext>({
  * </button>
  * ```
  */
-export function useRouter(): RouterHandle {
+export function useRouter(): Handle {
   const context = useContext(Context);
 
   const url: Url = useMemo(() => {
@@ -241,7 +241,7 @@ export function Router({
   }, []);
 
   const buildRouterHandle = useCallback(
-    (currentStatus: NavigationStatus): RouterHandle => ({
+    (currentStatus: NavigationStatus): Handle => ({
       status: currentStatus,
       url,
       navigate,
@@ -554,7 +554,8 @@ export type {
   RouterContext,
   RouterMode,
   Routes,
-  RouterHandle,
   Navigate,
   NavigateOptions,
 } from "./types";
+
+export type Router = Handle;

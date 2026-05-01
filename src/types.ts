@@ -63,7 +63,7 @@ export type RouteEntry = {
 type Loader<T extends string> = (args: LoaderArgs<T>) => unknown;
 
 /** Router handle passed to `match` and `redirect` — the same shape as `useRouter()`. */
-export type RouterHandle = {
+export type Router = {
   status: NavigationStatus;
   url: Url;
   navigate: Navigate;
@@ -80,7 +80,7 @@ export type RouterHandle = {
 export type LoaderComponentArgs<T extends string, D> =
   | {
       params: ParamsFor<T>;
-      router: RouterHandle;
+      router: Router;
       status: "loading";
       data: undefined;
       error: undefined;
@@ -88,7 +88,7 @@ export type LoaderComponentArgs<T extends string, D> =
     }
   | {
       params: ParamsFor<T>;
-      router: RouterHandle;
+      router: Router;
       status: "ready";
       data: D;
       error: undefined;
@@ -96,7 +96,7 @@ export type LoaderComponentArgs<T extends string, D> =
     }
   | {
       params: ParamsFor<T>;
-      router: RouterHandle;
+      router: Router;
       status: "error";
       data: undefined;
       error: Error;
@@ -129,7 +129,7 @@ export type PathWithoutLoader<T extends string = string> = {
   /** Render function receiving typed `params`, `url`, and the `router` handle. */
   match: (args: {
     params: ParamsFor<T>;
-    router: RouterHandle;
+    router: Router;
     url: URL;
   }) => React.ReactNode;
   loader?: undefined;
@@ -139,7 +139,7 @@ export type PathWithoutLoader<T extends string = string> = {
 /** Arguments passed to a `redirect` callback. */
 export type RedirectArgs<T extends string = string> = {
   params: ParamsFor<T>;
-  router: RouterHandle;
+  router: Router;
   url: URL;
 };
 
@@ -160,7 +160,7 @@ export type PathWithRedirect<T extends string = string> = {
 /** Component args for a route without a loader. */
 type StaticComponentArgs = {
   params: Params;
-  router: RouterHandle;
+  router: Router;
   url: URL;
 };
 
