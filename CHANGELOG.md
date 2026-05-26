@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [0.1.4](https://github.com/Wildhoney/ReactWayfinder/compare/v0.1.3...v0.1.4) (2026-05-26)
+
+
+### Bug Fixes
+
+* avoid double-prepending base path on router redirects ([635055d](https://github.com/Wildhoney/ReactWayfinder/commit/635055d6fd3a68682842f7688b7b0dfc3fd36e8b))
+
 ## [0.1.3](https://github.com/Wildhoney/ReactWayfinder/compare/v0.1.2...v0.1.3) (2026-05-01)
 
 ## [0.1.2](https://github.com/Wildhoney/ReactWayfinder/compare/v0.1.1...v0.1.2) (2026-05-01)
