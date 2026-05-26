@@ -182,6 +182,40 @@ describe("Router", () => {
       writable: true,
     });
   });
+
+  it("does not double-prepend base when redirect uses router.url under a non-empty base", () => {
+    Object.defineProperty(window, "location", {
+      value: { href: "http://localhost/cats/unknown/path" },
+      writable: true,
+    });
+
+    const routes = [
+      { url: "/:index", match: () => <h1>Cat</h1> },
+      {
+        url: "*",
+        redirect: ({
+          router,
+        }: {
+          router: {
+            url: (
+              p: string,
+              params?: Record<string, string | number>,
+            ) => string;
+          };
+        }) => router.url("/:index", { index: 0 }),
+      },
+    ];
+
+    render(<Router routes={routes} base="/cats" />);
+    expect(mockNavigation.navigate).toHaveBeenCalledWith("/cats/0", {
+      history: "replace",
+    });
+
+    Object.defineProperty(window, "location", {
+      value: { href: "http://localhost/" },
+      writable: true,
+    });
+  });
 });
 
 describe("Route", () => {

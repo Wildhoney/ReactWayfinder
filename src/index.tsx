@@ -224,9 +224,6 @@ export function Router({
   const previousPathname = useRef<string | null>(null);
   const scrollPositions = useRef<Map<string, number>>(new Map());
 
-  const baseRef = useRef(base);
-  baseRef.current = base;
-
   const url: Url = useMemo(() => {
     return ((pattern: string, params?: Record<string, string | number>) => {
       const built = params ? buildUrl(pattern, params) : pattern;
@@ -263,9 +260,7 @@ export function Router({
             })
           : definition;
 
-      window.navigation.navigate(prefixBase(target, baseRef.current), {
-        history: "replace",
-      });
+      window.navigation.navigate(target, { history: "replace" });
     },
     [buildRouterHandle],
   );
