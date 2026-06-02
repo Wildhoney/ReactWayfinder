@@ -3,7 +3,7 @@ import { useNProgress } from "@tanem/react-nprogress";
 import { useRouter } from "react-wayfinder";
 import { Container, Bar, Peg } from "./styles";
 
-/** Top-of-page progress bar that animates while any navigation loader is running. */
+/** Top-of-page progress bar that animates while any navigation's `data` function is running. */
 export default function Progress(): ReactElement {
   const router = useRouter();
   const [mounted, setMounted] = useState(false);

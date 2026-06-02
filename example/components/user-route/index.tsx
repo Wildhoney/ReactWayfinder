@@ -3,7 +3,7 @@ import { useNames } from "../names";
 import User from "../user";
 import type { Props } from "./types";
 
-/** Bridges the route loader data and the names context, passing the resolved display name to {@link User}. */
+/** Bridges the route's `data` and the names context, passing the resolved display name to {@link User}. */
 export default function UserRoute({ id, name, email }: Props): ReactElement {
   const { names, setName } = useNames();
   const displayName = names[id] ?? name;

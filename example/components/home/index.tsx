@@ -2,7 +2,7 @@ import type { ReactElement } from "react";
 import Navigation from "../navigation";
 import { Page } from "./styles";
 
-/** Landing page with a welcome message. Has no loader so it renders instantly. */
+/** Landing page with a welcome message. Has no `data` function so it renders instantly. */
 export default function Home(): ReactElement {
   return (
     <>

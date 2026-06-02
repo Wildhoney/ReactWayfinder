@@ -4,7 +4,7 @@ export type Props = {
   id: string;
   /** Current display name (may be overridden via the names context). */
   name: string;
-  /** User's email address resolved by the route loader. */
+  /** User's email address resolved by the route's `data` function. */
   email: string;
   /** Callback fired when the user edits the name input. */
   onNameChange: (name: string) => void;

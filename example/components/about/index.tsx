@@ -6,7 +6,7 @@ import Navigation from "../navigation";
 import { Page, Profiles, Card, Avatar } from "./styles";
 import { Spinner } from "../../styles";
 
-/** Static about page with navigable team member cards. Has no loader so it renders instantly. */
+/** Static about page with navigable team member cards. Has no `data` function so it renders instantly. */
 export default function About(): ReactElement {
   const router = useRouter();
   const { names } = useNames();
@@ -16,7 +16,7 @@ export default function About(): ReactElement {
       <Navigation />
       <Page>
         <h1>About</h1>
-        <p>This page has no loader so it renders instantly.</p>
+        <p>This page has no <code>data</code> function so it renders instantly.</p>
         <h2>Team</h2>
         <Profiles>
           {[1, 2, 3].map((id) => (

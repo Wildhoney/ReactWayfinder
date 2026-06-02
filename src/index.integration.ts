@@ -21,14 +21,14 @@ test.describe("deferred mode", () => {
     await expect(page).toHaveURL("/about");
   });
 
-  test("navigates to user page with loader", async ({ page }) => {
+  test("navigates to user page with data", async ({ page }) => {
     await page.goto("/");
     await link(page, "User 1").click();
     await expect(heading(page)).toHaveText("User 1", { timeout: 10_000 });
     await expect(page).toHaveURL("/users/1");
   });
 
-  test("keeps previous page while loader runs", async ({ page }) => {
+  test("keeps previous page while data loads", async ({ page }) => {
     await page.goto("/about");
     await expect(heading(page)).toHaveText("About");
 

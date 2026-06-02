@@ -4,7 +4,7 @@
 
 ![build](https://github.com/Wildhoney/Wayfinder/actions/workflows/ci.yml/badge.svg)
 
-Strongly-typed React router built on the [Navigation API](https://web.dev/blog/baseline-navigation-api). No outlets, no nesting &mdash; just routes, loaders, and a URL builder.
+Strongly-typed React router built on the [Navigation API](https://web.dev/blog/baseline-navigation-api). No outlets, no nesting &mdash; just routes, data, and a URL builder.
 
 <img src="media/demo.gif" alt="react-wayfinder demo" width="960" />
 
@@ -44,8 +44,7 @@ Define your routes and render the router:
 
 ```tsx
 import { createRoot } from "react-dom/client";
-import { route, Router } from "react-wayfinder";
-import type { Routes } from "react-wayfinder";
+import { route, Router, type Routes } from "react-wayfinder";
 
 const routes = [
   route({
@@ -56,7 +55,7 @@ const routes = [
   }),
   route({
     url: urls.user,
-    async loader({ params, signal }) {
+    async data({ params, signal }) {
       return fetchUser(params.id, { signal });
     },
     match({ status, params, data, error }) {
@@ -74,12 +73,12 @@ createRoot(document.getElementById("root")!).render(
 );
 ```
 
-Routes **without** a loader receive `params`, `url`, and `router`. Routes **with** a loader additionally receive a discriminated union &mdash; narrow `data` via `status` (`"loading"`, `"ready"`, `"error"`). Use `"*"` as a catch-all for unmatched routes. The `router` argument is the same handle returned by `useRouter()` &mdash; useful when you need type-safe URL building or programmatic navigation outside of a hook context.
+Routes **without** a `data` function receive `params`, `url`, and `router`. Routes **with** a `data` function additionally receive a discriminated union &mdash; narrow `data` via `status` (`"loading"`, `"ready"`, `"error"`). Use `"*"` as a catch-all for unmatched routes. The `router` argument is the same handle returned by `useRouter()` &mdash; useful when you need type-safe URL building or programmatic navigation outside of a hook context.
 
 
 ## Navigation State
 
-Wrap any navigable element in `<Route>` to get `href`, `active`, `pending`, and `handler`. For `<a>` tags, use `href` &mdash; the Navigation API intercepts the click natively. For `<button>` elements, attach `handler` as `onClick` to navigate via `navigation.navigate()`. Every `<Route>` whose `href` matches the navigation destination shows `pending: true` while a loader is running:
+Wrap any navigable element in `<Route>` to get `href`, `active`, `pending`, and `handler`. For `<a>` tags, use `href` &mdash; the Navigation API intercepts the click natively. For `<button>` elements, attach `handler` as `onClick` to navigate via `navigation.navigate()`. Every `<Route>` whose `href` matches the navigation destination shows `pending: true` while a route's `data` function is running:
 
 ```tsx
 import { Route, useRouter } from "react-wayfinder";
@@ -157,34 +156,34 @@ const routes = [
 
 ## Cancellation
 
-Every loader receives an `AbortSignal` via `signal`. The signal is aborted when:
+Every `data` function receives an `AbortSignal` via `signal`. The signal is aborted when:
 
 - The user presses **Escape** during a pending navigation
 - A new navigation supersedes the current one (clicking User 2 while User 1 is loading)
 
 ```tsx
-async loader({ params, signal }) {
+async data({ params, signal }) {
   const response = await fetch(`/api/users/${params.id}`, { signal });
   return response.json();
 }
 ```
 
-When cancelled, the router restores the previous route and URL &mdash; no stale state. Escape only fires when a loader is in-flight; pressing Escape after navigation completes does nothing.
+When cancelled, the router restores the previous route and URL &mdash; no stale state. Escape only fires when a `data` function is in-flight; pressing Escape after navigation completes does nothing.
 
 
 ## Caching
 
-Every loader receives `cache` &mdash; the previously loaded data for that route, or `undefined` on first visit. The router always calls the loader; you decide the caching strategy:
+Every `data` function receives `cache` &mdash; the previously loaded data for that route, or `undefined` on first visit. The router always calls `data`; you decide the caching strategy:
 
 ```tsx
-async loader({ params, signal, cache }) {
+async data({ params, signal, cache }) {
   if (cache) return cache;
   const response = await fetch(`/api/users/${params.id}`, { signal });
   return response.json();
 }
 ```
 
-Previously visited routes are preserved in the DOM using React [`<Activity>`](https://react.dev/reference/react/Activity) &mdash; their component state, scroll position, and form inputs survive navigation. The example app's `/feed` route demonstrates this: scroll down to load more items via the infinite loader, navigate away, then come back &mdash; your scroll position and every loaded item are still there.
+Previously visited routes are preserved in the DOM using React [`<Activity>`](https://react.dev/reference/react/Activity) &mdash; their component state, scroll position, and form inputs survive navigation. The example app's `/feed` route demonstrates this: scroll down to load more items via the infinite-scroll `data` function, navigate away, then come back &mdash; your scroll position and every loaded item are still there.
 
 
 ## View Transitions
@@ -216,7 +215,7 @@ Direction is detected via the Navigation API &mdash; `"back"` when traversing to
 
 ## Router Modes
 
-The `mode` prop controls how the router transitions between routes with loaders:
+The `mode` prop controls how the router transitions between routes that fetch data:
 
 ```tsx
 <Router routes={routes} mode="deferred" />
@@ -224,7 +223,7 @@ The `mode` prop controls how the router transitions between routes with loaders:
 
 | Mode | Behaviour |
 |---|---|
-| `"deferred"` (default) | Keeps the previous page on screen while the loader runs. Inline spinners via `<Route>` show on the clicked element. |
+| `"deferred"` (default) | Keeps the previous page on screen while the `data` function runs. Inline spinners via `<Route>` show on the clicked element. |
 | `"immediate"` | Switches to the new route immediately with `status: "loading"` so you can render skeletons. Escape restores the previous route from the preserved `<Activity>`. |
 
 When deploying to a sub-path (e.g. `https://example.com/my-app/`), pass `base` so the router strips the prefix before matching &mdash; route patterns stay root-relative. With Vite, use `import.meta.env.BASE_URL` to keep it in sync with your config:

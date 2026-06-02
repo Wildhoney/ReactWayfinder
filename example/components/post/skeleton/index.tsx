@@ -3,7 +3,7 @@ import { Skeleton } from "antd";
 import Navigation from "../../navigation";
 import { Page, HeroPlaceholder } from "./styles";
 
-/** Placeholder skeleton shown while the post detail loader is in flight. */
+/** Placeholder skeleton shown while the post detail `data` function is in flight. */
 export default function PostSkeleton(): ReactElement {
   return (
     <>

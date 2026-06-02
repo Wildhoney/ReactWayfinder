@@ -12,10 +12,10 @@ import {
 import { flushSync } from "react-dom";
 import type {
   Path,
-  PathWithLoader,
-  PathWithoutLoader,
+  PathWithData,
+  PathWithoutData,
   PathWithRedirect,
-  LoaderArgs,
+  DataArgs,
   RouterProps,
   RouteMatch,
   NavigationDirection,
@@ -74,7 +74,8 @@ export function useRouter(): Handle {
 
 /**
  * Render-prop component scoped to a single href. Provides `active` and
- * `pending` state so only the element the user clicked shows a spinner.
+ * `pending` state so only the element the user clicked shows a spinner
+ * while the route's `data` function is running.
  *
  * Pass `replace` to navigate by replacing the current history entry instead
  * of pushing a new one — useful for canonicalisation and login redirects.
@@ -170,7 +171,7 @@ export function Route({
  *
  * Uses React `<Activity>` to preserve previously visited routes in the DOM.
  * The active route is `"visible"`, all others are `"hidden"` — preserving
- * component state, scroll position, and loader data without re-fetching.
+ * component state, scroll position, and route data without re-fetching.
  *
  * @param mode `"deferred"` keeps the previous page while loading. `"immediate"` switches immediately with `status: "loading"`.
  *
@@ -201,17 +202,17 @@ export function Router({
         match: initial,
         data: undefined,
         error: undefined,
-        status: initial.route.loader ? "loading" : "ready",
+        status: initial.route.data ? "loading" : "ready",
       });
     }
     return map;
   });
 
   const [status, setStatus] = useState<NavigationStatus>(
-    initial?.route.loader ? "navigating" : "idle",
+    initial?.route.data ? "navigating" : "idle",
   );
   const [destination, setDestination] = useState<string | null>(
-    initial?.route.loader ? initial.url.pathname : null,
+    initial?.route.data ? initial.url.pathname : null,
   );
   const [navigationId, setNavigationId] = useState(0);
 
@@ -329,7 +330,7 @@ export function Router({
       const existing = visitedSnapshot.current.get(pathname);
       const cache = existing?.status === "ready" ? existing.data : undefined;
 
-      if (nextMatch.route.loader) {
+      if (nextMatch.route.data) {
         const controller = new AbortController();
         abortController.current = controller;
 
@@ -352,7 +353,7 @@ export function Router({
         }
 
         try {
-          const result = await nextMatch.route.loader({
+          const result = await nextMatch.route.data({
             params: nextMatch.params,
             url: nextMatch.url,
             signal: controller.signal,
@@ -414,7 +415,7 @@ export function Router({
   useEffect(() => {
     if (initial?.route.redirect) {
       performRedirect(initial);
-    } else if (initial?.route.loader) {
+    } else if (initial?.route.data) {
       handleMatch(initial);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -479,7 +480,7 @@ export function Router({
         const render = entry.match.route.match;
         if (!render) return null;
 
-        const args = entry.match.route.loader
+        const args = entry.match.route.data
           ? {
               params: entry.match.params,
               router: routerHandle,
@@ -509,13 +510,13 @@ export function Router({
 
 /**
  * Define a strongly-typed route. Infers param types from the URL pattern
- * and loader return type for the `data` argument in `match`.
+ * and the `data` function's return type for the `data` argument in `match`.
  *
  * @example
  * ```tsx
  * route({
  *   url: "/users/:id",
- *   async loader({ params, signal }) {
+ *   async data({ params, signal }) {
  *     return await fetchUser(params.id, { signal });
  *   },
  *   match({ status, params, data }) {
@@ -533,12 +534,12 @@ export function Router({
  */
 export function route<
   T extends string,
-  L extends (args: LoaderArgs<T>) => unknown,
->(definition: PathWithLoader<T, L>): Path;
-export function route<T extends string>(definition: PathWithoutLoader<T>): Path;
+  D extends (args: DataArgs<T>) => unknown,
+>(definition: PathWithData<T, D>): Path;
+export function route<T extends string>(definition: PathWithoutData<T>): Path;
 export function route<T extends string>(definition: PathWithRedirect<T>): Path;
 export function route(
-  definition: PathWithLoader | PathWithoutLoader | PathWithRedirect,
+  definition: PathWithData | PathWithoutData | PathWithRedirect,
 ): Path {
   return definition as Path;
 }

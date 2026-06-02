@@ -1,5 +1,4 @@
-import { route } from "react-wayfinder";
-import type { Routes } from "react-wayfinder";
+import { route, type Routes } from "react-wayfinder";
 import Home from "./components/home";
 import About from "./components/about";
 import Contact from "./components/contact";
@@ -20,7 +19,7 @@ export const urls = {
   user: "/users/:id",
 } as const;
 
-/** Application route definitions with loaders for data-fetching routes. */
+/** Application route definitions with `data` functions for data-fetching routes. */
 export const routes = [
   route({
     url: urls.home,
@@ -40,7 +39,7 @@ export const routes = [
   }),
   route({
     url: "/contact/postal",
-    async loader({ signal, cache }) {
+    async data({ signal, cache }) {
       if (cache) return cache as { address: string };
       await sleep(500 + Math.random() * 500, signal);
       return { address: "42 Wayfinder Lane, London, EC1A 1BB, United Kingdom" };
@@ -72,7 +71,7 @@ export const routes = [
   }),
   route({
     url: urls.post,
-    async loader({ params, signal, cache }) {
+    async data({ params, signal, cache }) {
       if (cache) return cache as { title: string };
       await sleep(500 + Math.random() * 500, signal);
       return { title: `Post #${params.id}` };
@@ -90,7 +89,7 @@ export const routes = [
   }),
   route({
     url: urls.user,
-    async loader({ params, signal, cache }) {
+    async data({ params, signal, cache }) {
       if (cache) return cache as { name: string; email: string };
       await sleep(500 + Math.random() * 500, signal);
       return {
