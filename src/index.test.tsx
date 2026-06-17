@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, act } from "@testing-library/react";
-import { Route, Router, useRouter } from "./index";
+import { App, Route, Router, Using, useRouter } from "./index";
 
 // Mock the Navigation API.
 const mockNavigation = {
@@ -21,22 +21,10 @@ beforeEach(() => {
   mockNavigation.navigate.mockClear();
 });
 
-describe("useRouter().url()", () => {
-  function UrlTest({
-    pattern,
-    params,
-  }: {
-    pattern: string;
-    params?: Record<string, string | number>;
-  }) {
+describe("useRouter().url() — base-prefixer", () => {
+  function UrlTest({ href }: { href: string }) {
     const router = useRouter();
-    const result = (
-      router.url as (
-        pattern: string,
-        params?: Record<string, string | number>,
-      ) => string
-    )(pattern, params);
-    return <span data-testid="url-result">{result}</span>;
+    return <span data-testid="url-result">{router.url(href)}</span>;
   }
 
   function renderWithRouter(element: React.ReactNode, base = "") {
@@ -44,45 +32,72 @@ describe("useRouter().url()", () => {
     return render(<Router routes={routes} base={base} />);
   }
 
-  it("returns a static path as-is", () => {
-    renderWithRouter(<UrlTest pattern="/about" />);
+  it("returns the href unchanged when no base is set", () => {
+    renderWithRouter(<UrlTest href="/about" />);
     expect(screen.getByTestId("url-result").textContent).toBe("/about");
   });
 
-  it("substitutes params into the pattern", () => {
-    renderWithRouter(<UrlTest pattern="/users/:id" params={{ id: 42 }} />);
-    expect(screen.getByTestId("url-result").textContent).toBe("/users/42");
+  it("prefixes base path", () => {
+    renderWithRouter(<UrlTest href="/about" />, "/app");
+    expect(screen.getByTestId("url-result").textContent).toBe("/app/about");
+  });
+
+  it("prefixes base path to root", () => {
+    renderWithRouter(<UrlTest href="/" />, "/app");
+    expect(screen.getByTestId("url-result").textContent).toBe("/app/");
+  });
+});
+
+describe("App({ urls }) — callable url builders", () => {
+  const testApp = App({
+    urls: {
+      home: "/",
+      user: "/users/:id",
+      post: "/posts/:slug/comments/:cid",
+      escape: "/users/:name",
+    },
+  });
+
+  it("returns the pattern for a zero-param builder", () => {
+    expect(testApp.urls.home()).toBe("/");
+  });
+
+  it("substitutes a single param", () => {
+    expect(testApp.urls.user({ id: 42 })).toBe("/users/42");
   });
 
   it("substitutes multiple params", () => {
-    renderWithRouter(
-      <UrlTest
-        pattern="/posts/:slug/comments/:cid"
-        params={{ slug: "hello", cid: 5 }}
-      />,
-    );
-    expect(screen.getByTestId("url-result").textContent).toBe(
+    expect(testApp.urls.post({ slug: "hello", cid: 5 })).toBe(
       "/posts/hello/comments/5",
     );
   });
 
   it("encodes param values", () => {
-    renderWithRouter(
-      <UrlTest pattern="/users/:name" params={{ name: "hello world" }} />,
-    );
-    expect(screen.getByTestId("url-result").textContent).toBe(
+    expect(testApp.urls.escape({ name: "hello world" })).toBe(
       "/users/hello%20world",
     );
   });
 
-  it("prefixes base path", () => {
-    renderWithRouter(<UrlTest pattern="/about" />, "/app");
-    expect(screen.getByTestId("url-result").textContent).toBe("/app/about");
+  it("exposes the source pattern via .pattern", () => {
+    expect(testApp.urls.user.pattern).toBe("/users/:id");
   });
 
-  it("prefixes base path to root", () => {
-    renderWithRouter(<UrlTest pattern="/" />, "/app");
-    expect(screen.getByTestId("url-result").textContent).toBe("/app/");
+  it("composes with router.url() for base prefixing", () => {
+    function Built() {
+      const router = testApp.useRouter();
+      return (
+        <span data-testid="built">
+          {router.url(router.urls.user({ id: 42 }))}
+        </span>
+      );
+    }
+    render(
+      <testApp.Router
+        routes={[{ url: "/", match: () => <Built /> }]}
+        base="/app"
+      />,
+    );
+    expect(screen.getByTestId("built").textContent).toBe("/app/users/42");
   });
 });
 
@@ -189,32 +204,26 @@ describe("Router", () => {
       writable: true,
     });
 
-    const routes = [
-      { url: "/:index", match: () => <h1>Cat</h1> },
-      {
-        url: "*",
-        redirect: ({
-          router,
-        }: {
-          router: {
-            url: (
-              p: string,
-              params?: Record<string, string | number>,
-            ) => string;
-          };
-        }) => router.url("/:index", { index: 0 }),
-      },
-    ];
+    try {
+      const routes = [
+        { url: "/:index", match: () => <h1>Cat</h1> },
+        {
+          url: "*",
+          redirect: ({ router }: { router: { url: (p: string) => string } }) =>
+            router.url("/0"),
+        },
+      ];
 
-    render(<Router routes={routes} base="/cats" />);
-    expect(mockNavigation.navigate).toHaveBeenCalledWith("/cats/0", {
-      history: "replace",
-    });
-
-    Object.defineProperty(window, "location", {
-      value: { href: "http://localhost/" },
-      writable: true,
-    });
+      render(<Router routes={routes} base="/cats" />);
+      expect(mockNavigation.navigate).toHaveBeenCalledWith("/cats/0", {
+        history: "replace",
+      });
+    } finally {
+      Object.defineProperty(window, "location", {
+        value: { href: "http://localhost/" },
+        writable: true,
+      });
+    }
   });
 });
 
@@ -352,18 +361,23 @@ describe("useRouter().navigate()", () => {
     });
   });
 
-  it("replaces when { replace: true } is passed", () => {
+  it("replaces when Using.Replace is passed, reading the href from app.urls", () => {
+    const loginApp = App({ urls: { login: "/login" } });
+
     function Trigger() {
-      const router = useRouter();
+      const router = loginApp.useRouter();
       return (
-        <button onClick={() => router.navigate("/login", { replace: true })}>
+        <button
+          onClick={() => router.navigate(router.urls.login(), Using.Replace)}
+        >
           Sign in
         </button>
       );
     }
-    const routes = [{ url: "/", match: () => <Trigger /> }];
 
-    render(<Router routes={routes} />);
+    render(
+      <loginApp.Router routes={[{ url: "/", match: () => <Trigger /> }]} />,
+    );
     act(() => {
       screen.getByText("Sign in").click();
     });

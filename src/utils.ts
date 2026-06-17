@@ -1,4 +1,11 @@
-import type { Params, Path, RouteMatch } from "./types";
+import type {
+  AppUrls,
+  Params,
+  Path,
+  RouteMatch,
+  UrlBuilder,
+  UrlsShape,
+} from "./types";
 
 /**
  * Converts a URL pattern with `:param` segments into a regex with named capture groups.
@@ -116,4 +123,44 @@ export function buildUrl(
     }
     return encodeURIComponent(String(value));
   });
+}
+
+/**
+ * Wraps a single URL pattern as a callable {@link UrlBuilder} with the
+ * source `pattern` literal attached as a property.
+ */
+function makeBuilder<T extends string>(pattern: T): UrlBuilder<T> {
+  const builder = (params?: Record<string, string | number>) =>
+    params ? buildUrl(pattern, params) : pattern;
+  return Object.assign(builder, { pattern }) as UrlBuilder<T>;
+}
+
+/**
+ * Transforms a raw url-pattern map (the value passed to `App({ urls })`)
+ * into the built {@link AppUrls} form — every entry becomes a callable
+ * builder. Each builder retains its source pattern via `.pattern`.
+ *
+ * @example
+ * ```ts
+ * const urls = makeUrls({ home: "/", user: "/users/:id" });
+ * urls.home();             // "/"
+ * urls.user({ id: 42 });   // "/users/42"
+ * urls.user.pattern;       // "/users/:id"
+ * ```
+ */
+export function makeUrls<U extends UrlsShape>(urls: U): AppUrls<U> {
+  const result: Record<string, UrlBuilder<string>> = {};
+  for (const key in urls) {
+    result[key] = makeBuilder(urls[key]) as UrlBuilder<string>;
+  }
+  return result as AppUrls<U>;
+}
+
+/**
+ * Extracts the URL pattern from a value that may be either a literal
+ * pattern string or a {@link UrlBuilder}. Used by {@link route} so route
+ * definitions can pass `app.urls.X` directly without `.pattern`.
+ */
+export function extractPattern(url: string | UrlBuilder<string>): string {
+  return typeof url === "function" ? url.pattern : url;
 }

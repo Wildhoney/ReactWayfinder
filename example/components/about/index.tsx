@@ -1,6 +1,6 @@
 import type { ReactElement } from "react";
-import { Route, useRouter } from "react-wayfinder";
-import { urls } from "../../utils";
+import { Route } from "react-wayfinder";
+import { app } from "../../utils";
 import { useNames } from "../names";
 import Navigation from "../navigation";
 import { Page, Profiles, Card, Avatar } from "./styles";
@@ -8,7 +8,7 @@ import { Spinner } from "../../styles";
 
 /** Static about page with navigable team member cards. Has no `data` function so it renders instantly. */
 export default function About(): ReactElement {
-  const router = useRouter();
+  const router = app.useRouter();
   const { names } = useNames();
 
   return (
@@ -16,11 +16,13 @@ export default function About(): ReactElement {
       <Navigation />
       <Page>
         <h1>About</h1>
-        <p>This page has no <code>data</code> function so it renders instantly.</p>
+        <p>
+          This page has no <code>data</code> function so it renders instantly.
+        </p>
         <h2>Team</h2>
         <Profiles>
           {[1, 2, 3].map((id) => (
-            <Route key={id} href={router.url(urls.user, { id })}>
+            <Route key={id} href={router.url(router.urls.user({ id }))}>
               {(route) => (
                 <Card onClick={route.handler}>
                   <Avatar

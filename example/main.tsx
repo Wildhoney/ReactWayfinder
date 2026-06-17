@@ -1,8 +1,7 @@
 import type { ReactElement } from "react";
 import { createRoot } from "react-dom/client";
-import { Router } from "react-wayfinder";
 
-import { routes } from "./utils";
+import { app, routes } from "./utils";
 import { ModeProvider, useMode } from "./components/mode";
 import { NamesProvider } from "./components/names";
 import Progress from "./components/progress";
@@ -13,10 +12,10 @@ function App(): ReactElement {
   const { mode } = useMode();
 
   return (
-    <Router routes={routes} mode={mode} base={import.meta.env.BASE_URL}>
+    <app.Router routes={routes} mode={mode} base={import.meta.env.BASE_URL}>
       <Progress />
       <GithubCorner href="https://github.com/Wildhoney/ReactWayfinder" />
-    </Router>
+    </app.Router>
   );
 }
 

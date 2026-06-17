@@ -1,4 +1,4 @@
-import { route, type Routes } from "react-wayfinder";
+import { App, route, type Routes } from "react-wayfinder";
 import Home from "./components/home";
 import About from "./components/about";
 import Contact from "./components/contact";
@@ -9,33 +9,42 @@ import NotFound from "./components/missing";
 import PostSkeleton from "./components/post/skeleton";
 import UserSkeleton from "./components/user/skeleton";
 
-/** Centralized URL pattern definitions used across all route and navigation code. */
-export const urls = {
-  home: "/",
-  about: "/about",
-  contact: "/contact/:method",
-  feed: "/feed",
-  post: "/feed/:id",
-  user: "/users/:id",
-} as const;
+/**
+ * Per-app handle. URLs are declared inline; the `const` modifier on App's
+ * generic preserves the literal pattern types so `app.urls.user({ id })`
+ * is fully typed without an `as const` annotation.
+ *
+ * Components inside this App use `app.useRouter()` (auto-typed). Cross-app
+ * shared components use `shared.useRouter<typeof app | typeof otherApp>()`.
+ */
+export const app = App({
+  urls: {
+    home: "/",
+    about: "/about",
+    contact: "/contact/:method",
+    feed: "/feed",
+    post: "/feed/:id",
+    user: "/users/:id",
+  },
+});
 
 /** Application route definitions with `data` functions for data-fetching routes. */
 export const routes = [
   route({
-    url: urls.home,
+    url: app.urls.home,
     match() {
       return <Home />;
     },
   }),
   route({
-    url: urls.about,
+    url: app.urls.about,
     match() {
       return <About />;
     },
   }),
   route({
     url: "/contact",
-    redirect: ({ router }) => router.url(urls.contact, { method: "email" }),
+    redirect: ({ router }) => router.url(app.urls.contact({ method: "email" })),
   }),
   route({
     url: "/contact/postal",
@@ -58,19 +67,19 @@ export const routes = [
     },
   }),
   route({
-    url: urls.contact,
+    url: app.urls.contact,
     match({ params }) {
       return <Contact method={params.method as "email" | "telephone"} />;
     },
   }),
   route({
-    url: urls.feed,
+    url: app.urls.feed,
     match() {
       return <Feed />;
     },
   }),
   route({
-    url: urls.post,
+    url: app.urls.post,
     async data({ params, signal, cache }) {
       if (cache) return cache as { title: string };
       await sleep(500 + Math.random() * 500, signal);
@@ -88,7 +97,7 @@ export const routes = [
     },
   }),
   route({
-    url: urls.user,
+    url: app.urls.user,
     async data({ params, signal, cache }) {
       if (cache) return cache as { name: string; email: string };
       await sleep(500 + Math.random() * 500, signal);
