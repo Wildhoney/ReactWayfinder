@@ -1,6 +1,6 @@
 {
   "name": "react-wayfinder",
-  "version": "0.1.4",
+  "version": "0.2.0",
   "description": "React hooks for the Navigation API",
   "type": "module",
   "main": "dist/react-wayfinder.cjs",
