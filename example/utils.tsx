@@ -1,4 +1,4 @@
-import { App, route, type Routes } from "react-wayfinder";
+import { Router, Redirect, route, type RoutesOf } from "react-wayfinder";
 import Home from "./components/home";
 import About from "./components/about";
 import Contact from "./components/contact";
@@ -10,41 +10,34 @@ import PostSkeleton from "./components/post/skeleton";
 import UserSkeleton from "./components/user/skeleton";
 
 /**
- * Per-app handle. URLs are declared inline; the `const` modifier on App's
- * generic preserves the literal pattern types so `app.urls.user({ id })`
- * is fully typed without an `as const` annotation.
+ * Per-app routes. Each named route's `name` is a key of the inferred
+ * `Urls` shape and its `url` is the matching pattern. `Router()` infers
+ * the urls type from the entries; consumers can re-export it via
+ * `RoutesOf<typeof router>` if they need it elsewhere.
  *
- * Components inside this App use `app.useRouter()` (auto-typed). Cross-app
- * shared components use `shared.useRouter<typeof app | typeof otherApp>()`.
+ * Components inside this app use `router.useContext()` (auto-typed).
+ * Cross-app shared components use `shared.useContext<Urls | OtherUrls>()`
+ * with a user-defined `is*App` type guard to narrow which host they're
+ * rendering under.
  */
-export const app = App({
-  urls: {
-    home: "/",
-    about: "/about",
-    contact: "/contact/:method",
-    feed: "/feed",
-    post: "/feed/:id",
-    user: "/users/:id",
-  },
-});
-
-/** Application route definitions with `data` functions for data-fetching routes. */
-export const routes = [
+export const router = Router([
   route({
-    url: app.urls.home,
+    name: "home",
+    url: "/",
     match() {
       return <Home />;
     },
   }),
   route({
-    url: app.urls.about,
+    name: "about",
+    url: "/about",
     match() {
       return <About />;
     },
   }),
   route({
     url: "/contact",
-    redirect: ({ router }) => router.url(app.urls.contact({ method: "email" })),
+    match: () => <Redirect href={router.url.contact({ method: "email" })} />,
   }),
   route({
     url: "/contact/postal",
@@ -53,51 +46,45 @@ export const routes = [
       await sleep(500 + Math.random() * 500, signal);
       return { address: "42 Wayfinder Lane, London, EC1A 1BB, United Kingdom" };
     },
-    match({ status, data, error }) {
-      switch (status) {
-        case "loading":
-          return <Contact method="postal" status="loading" />;
-        case "error":
-          return <Contact method="postal" status="error" error={error} />;
-        case "ready":
-          return (
-            <Contact method="postal" status="ready" address={data.address} />
-          );
-      }
+    match({ status, error, data }) {
+      if (status === "loading") return <Contact method="postal" status="loading" />;
+      if (error) return <Contact method="postal" status="error" error={error} />;
+      if (data) return <Contact method="postal" status="ready" address={data.address} />;
+      return null;
     },
   }),
   route({
-    url: app.urls.contact,
+    name: "contact",
+    url: "/contact/:method",
     match({ params }) {
       return <Contact method={params.method as "email" | "telephone"} />;
     },
   }),
   route({
-    url: app.urls.feed,
+    name: "feed",
+    url: "/feed",
     match() {
       return <Feed />;
     },
   }),
   route({
-    url: app.urls.post,
+    name: "post",
+    url: "/feed/:id",
     async data({ params, signal, cache }) {
       if (cache) return cache as { title: string };
       await sleep(500 + Math.random() * 500, signal);
       return { title: `Post #${params.id}` };
     },
     match({ status, params, data, error }) {
-      switch (status) {
-        case "loading":
-          return <PostSkeleton />;
-        case "error":
-          return <p>Error: {error.message}</p>;
-        case "ready":
-          return <Post id={params.id} title={data.title} />;
-      }
+      if (status === "loading") return <PostSkeleton />;
+      if (error) return <p>Error: {error.message}</p>;
+      if (data) return <Post id={params.id} title={data.title} />;
+      return null;
     },
   }),
   route({
-    url: app.urls.user,
+    name: "user",
+    url: "/users/:id",
     async data({ params, signal, cache }) {
       if (cache) return cache as { name: string; email: string };
       await sleep(500 + Math.random() * 500, signal);
@@ -107,16 +94,10 @@ export const routes = [
       };
     },
     match({ status, params, data, error }) {
-      switch (status) {
-        case "loading":
-          return <UserSkeleton />;
-        case "error":
-          return <p>Error: {error.message}</p>;
-        case "ready":
-          return (
-            <UserRoute id={params.id} name={data.name} email={data.email} />
-          );
-      }
+      if (status === "loading") return <UserSkeleton />;
+      if (error) return <p>Error: {error.message}</p>;
+      if (data) return <UserRoute id={params.id} name={data.name} email={data.email} />;
+      return null;
     },
   }),
   route({
@@ -125,7 +106,10 @@ export const routes = [
       return <NotFound />;
     },
   }),
-] satisfies Routes;
+]);
+
+/** Re-exported url-pattern shape — usable by cross-app shared components via `shared.useContext<Urls>()`. */
+export type Routes = RoutesOf<typeof router>;
 
 /** Returns a promise that resolves after {@link ms} milliseconds, or rejects if {@link signal} is aborted. */
 function sleep(ms: number, signal: AbortSignal) {

@@ -1,7 +1,7 @@
 import type { ReactElement } from "react";
 import { Route } from "react-wayfinder";
 import ContactSkeleton from "./skeleton";
-import { app } from "../../utils";
+import { router } from "../../utils";
 import Navigation from "../navigation";
 import type { ContactMethod } from "./types";
 import { Page, SubNav, Tab, Content } from "./styles";
@@ -35,7 +35,7 @@ export default function Contact({
   address,
   error,
 }: Props): ReactElement {
-  const router = app.useRouter();
+  const context = router.useContext();
 
   return (
     <>
@@ -46,7 +46,7 @@ export default function Contact({
           {methods.map(({ method: value, label }) => (
             <Route
               key={value}
-              href={router.url(router.urls.contact({ method: value }))}
+              href={context.url.contact({ method: value })}
             >
               {(route) => (
                 <Tab href={route.href} active={route.active}>

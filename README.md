@@ -20,7 +20,9 @@ Strongly-typed React router built on the [Navigation API](https://web.dev/blog/b
 6. [Caching](#caching)
 7. [View Transitions](#view-transitions)
 8. [Router Modes](#router-modes)
-9. [Nested Routes](#nested-routes)
+9. [Base Path](#base-path)
+10. [Nested Routes](#nested-routes)
+11. [Multi-App / Shared Components](#multi-app--shared-components)
 
 
 ## Getting Started
@@ -31,49 +33,61 @@ Install `react-wayfinder` using your preferred package manager:
 yarn add react-wayfinder
 ```
 
-Define your URL patterns in a central `urls` object so every route definition, `router.url()` call, and `<Route>` reference points to a single source of truth. Changing a pattern updates every call site at once:
+Declare your URL patterns as a string `enum Routes` &mdash; one declaration site for every link in the app. Pass each route literal into `Router([...])`, which infers the urls shape from the entries' `name`/`url` pairs and returns a definition with:
 
-```tsx
-export const urls = {
-  home: "/",
-  user: "/users/:id",
-} as const;
-```
-
-Define your routes and render the router:
+- a pre-bound `<router.Router>` component (mount it directly, no `using` prop),
+- a typed `router.url.X(params)` builder for every named route,
+- a `router.useContext()` hook for the navigation handle.
 
 ```tsx
 import { createRoot } from "react-dom/client";
-import { route, Router, type Routes } from "react-wayfinder";
+import { Router, route } from "react-wayfinder";
 
-const routes = [
+export enum Routes {
+  Home = "/",
+  User = "/users/:id",
+}
+
+export const router = Router([
   route({
-    url: urls.home,
+    name: "home",
+    url: Routes.Home,
     match() {
       return <h1>Home</h1>;
     },
   }),
   route({
-    url: urls.user,
+    name: "user",
+    url: Routes.User,
     async data({ params, signal }) {
-      return fetchUser(params.id, { signal });
+      return resources.user(params.id, { signal });
     },
     match({ status, params, data, error }) {
-      switch (status) {
-        case "loading": return <p>Loading&hellip;</p>;
-        case "error":   return <p>{error.message}</p>;
-        case "ready":   return <User id={params.id} name={data.name} />;
-      }
+      if (status === "loading") return <p>Loading&hellip;</p>;
+      if (status === "error")   return <p>{error.message}</p>;
+      if (status === "ready")   return <User id={params.id} name={data.name} />;
+      return null;
     },
   }),
-] satisfies Routes;
+]);
 
 createRoot(document.getElementById("root")!).render(
-  <Router routes={routes} />
+  <router.Router />
 );
 ```
 
-Routes **without** a `data` function receive `params`, `url`, and `router`. Routes **with** a `data` function additionally receive a discriminated union &mdash; narrow `data` via `status` (`"loading"`, `"ready"`, `"error"`). Use `"*"` as a catch-all for unmatched routes. The `router` argument is the same handle returned by `useRouter()` &mdash; useful when you need type-safe URL building or programmatic navigation outside of a hook context.
+Inside the tree, read the typed navigation handle via `router.useContext()`:
+
+```tsx
+import { router } from "./router";
+
+function Header() {
+  const context = router.useContext();
+  return <a href={context.url.user({ id: "42" })}>User 42</a>;
+}
+```
+
+Routes **without** a `data` function pass `params`, `url`, and `router` to `match`. Routes **with** a `data` function receive a discriminated `args` union keyed on `status` &mdash; destructure `{ status, params, data, error }` at the top and branch on `status`. TypeScript narrows the sibling `data` / `error` fields per branch (TS 5.4+ correlated-narrowing), so inside `status === "ready"` the `data` is the typed payload, inside `status === "error"` the `error` is `Error`, and neither is meaningful while `status === "loading"`. Use `"*"` as a catch-all for unmatched routes; anonymous routes (wildcards, untracked redirects) omit `name`.
 
 
 ## Navigation State
@@ -81,25 +95,32 @@ Routes **without** a `data` function receive `params`, `url`, and `router`. Rout
 Wrap any navigable element in `<Route>` to get `href`, `active`, `pending`, and `handler`. For `<a>` tags, use `href` &mdash; the Navigation API intercepts the click natively. For `<button>` elements, attach `handler` as `onClick` to navigate via `navigation.navigate()`. Every `<Route>` whose `href` matches the navigation destination shows `pending: true` while a route's `data` function is running:
 
 ```tsx
-import { Route, useRouter } from "react-wayfinder";
+import { Route } from "react-wayfinder";
+import { router } from "./router";
 
-const router = useRouter();
+function UserLink() {
+  const context = router.useContext();
 
-<Route href={router.url(urls.user, { id: 1 })}>
-  {route => (
-    <a href={route.href}>
-      User 1 {route.pending ? <Spinner /> : null}
-    </a>
-  )}
-</Route>
+  return (
+    <>
+      <Route href={context.url.user({ id: 1 })}>
+        {(state) => (
+          <a href={state.href}>
+            User 1 {state.pending ? <Spinner /> : null}
+          </a>
+        )}
+      </Route>
 
-<Route href={router.url(urls.user, { id: 1 })}>
-  {route => (
-    <button onClick={route.handler}>
-      User 1 {route.pending ? <Spinner /> : null}
-    </button>
-  )}
-</Route>
+      <Route href={context.url.user({ id: 1 })}>
+        {(state) => (
+          <button onClick={state.handler}>
+            User 1 {state.pending ? <Spinner /> : null}
+          </button>
+        )}
+      </Route>
+    </>
+  );
+}
 ```
 
 | Property | Type | Description |
@@ -108,50 +129,112 @@ const router = useRouter();
 | `active` | `boolean` | `true` if this href matches the currently rendered route |
 | `pending` | `boolean` | `true` while navigating to this `href` |
 | `handler` | `(event?) => void` | Attach as `onClick` on `<button>` elements &mdash; navigates via the Navigation API |
+| `navigate` | `Navigate` | Same `push`/`replace`/`back`/`forward`/`reload` object as `context.navigate` |
 
 Pass `replace` to `<Route>` to replace the current history entry instead of pushing a new one. This works for both `<a>` clicks and `handler` invocations:
 
 ```tsx
-<Route href={router.url(urls.login)} replace>
-  {route => <a href={route.href}>Sign in</a>}
+<Route href={context.url.signIn()} replace>
+  {(state) => <a href={state.href}>Sign in</a>}
+</Route>
+```
+
+`state.navigate` exposes the same `push`/`replace`/`back`/`forward`/`reload` object as `router.useContext().navigate`, so you can fire any history action straight from the render-prop and use `state.pending` to disable the link mid-fetch:
+
+```tsx
+<Route href={context.url.user({ id: 1 })}>
+  {(state) => (
+    <button
+      disabled={state.pending}
+      onClick={() => state.navigate.push(state.href)}
+    >
+      User 1
+    </button>
+  )}
 </Route>
 ```
 
 
 ## Programmatic Navigation
 
-`useRouter()` returns a `navigate(href, options?)` function for navigating outside of a `<Route>`. Pair it with the `url()` builder to keep URLs type-safe:
+`router.useContext()` returns a `navigate` object for navigating outside of a `<Route>`. Each method takes a pre-built href &mdash; pair it with the `url` builders to keep call sites type-safe:
 
 ```tsx
-const router = useRouter();
+import { router } from "./router";
 
-router.navigate(router.url(urls.user, { id: 1 }));               // push
-router.navigate(router.url(urls.login), { replace: true });      // replace
+function NavigationButtons() {
+  const context = router.useContext();
+
+  return (
+    <>
+      <button onClick={() => context.navigate.push(context.url.user({ id: 1 }))}>
+        Push
+      </button>
+      <button onClick={() => context.navigate.replace(context.url.signIn())}>
+        Replace
+      </button>
+      <button onClick={() => context.navigate.back()}>Back</button>
+      <button onClick={() => context.navigate.forward()}>Forward</button>
+      <button onClick={() => context.navigate.reload()}>Refresh</button>
+    </>
+  );
+}
 ```
 
-The same `router` handle is passed to every route's `match` and `redirect` callback &mdash; so you can navigate type-safely from places where hooks aren't available.
+| Method | Behaviour |
+|---|---|
+| `navigate.push(href)` | Push a new history entry (the default action). |
+| `navigate.replace(href)` | Swap the current history entry in place &mdash; useful for canonicalisation and login redirects. |
+| `navigate.back()` | Traverse one entry back, equivalent to the browser back button. |
+| `navigate.forward()` | Traverse one entry forward. |
+| `navigate.reload()` | Re-run the current route's `data` function &mdash; same URL, no new history entry. |
+
+The same `context` handle is passed to every route's `match` and `redirect` callback &mdash; so you can navigate type-safely from places where hooks aren't available.
+
+If you'd rather not import a specific `router` definition, use the standalone `useRouter<U>()` hook. Pass your routes type as the generic to get fully-typed builders without binding to a particular host:
+
+```tsx
+import { useRouter } from "react-wayfinder";
+import type { Routes } from "@app/router";
+
+function Header() {
+  const context = useRouter<typeof Routes>();
+  return <a href={context.url.home()}>Home</a>;
+}
+```
 
 
 ## Redirects
 
-A route with a `redirect` prop replaces the current history entry with the resolved target instead of rendering anything. Use it as a catch-all or to canonicalise an incomplete URL:
+Return `<Redirect href="...">` from a route's `match` callback to replace the current history entry with another URL. Use it as a catch-all or to canonicalise an incomplete URL. `<Redirect>` runs the navigation once on mount via `useEffect`, so re-renders of the surrounding `<Activity>` don't re-fire it.
 
 ```tsx
-const routes = [
+import { Router, Redirect, route } from "react-wayfinder";
+
+export enum Routes {
+  Cat = "/cats/:index",
+}
+
+export const router = Router([
   route({
-    url: urls.cat,
+    name: "cat",
+    url: Routes.Cat,
     match({ params }) {
       return <Viewer index={Number(params.index)} />;
     },
   }),
   route({
-    url: "*",
-    redirect: ({ router }) => router.url(urls.cat, { index: 0 }),
+    url: "/cats",
+    match: () => <Redirect href={router.url.cat({ index: 0 })} />,
   }),
-] satisfies Routes;
+  route({
+    url: "*",
+    match: () => <Redirect href={router.url.cat({ index: 0 })} />,
+  }),
+]);
 ```
 
-`redirect` accepts either a string or a callback receiving `{ params, url, router }`. The callback form gives you access to the type-safe `router.url()` builder so you don't have to hard-code paths. Redirects always replace the current history entry &mdash; the browser back button skips past the redirected-from URL.
+`<Redirect>` always uses `history: "replace"`, so the browser back button skips the redirected-from URL. Pair it with `router.url.X(...)` to keep targets type-safe — no `as` cast required.
 
 
 ## Cancellation
@@ -215,10 +298,10 @@ Direction is detected via the Navigation API &mdash; `"back"` when traversing to
 
 ## Router Modes
 
-The `mode` prop controls how the router transitions between routes that fetch data:
+The `mode` prop on `<router.Router>` controls how the router transitions between routes that fetch data:
 
 ```tsx
-<Router routes={routes} mode="deferred" />
+<router.Router mode="deferred" />
 ```
 
 | Mode | Behaviour |
@@ -226,19 +309,21 @@ The `mode` prop controls how the router transitions between routes that fetch da
 | `"deferred"` (default) | Keeps the previous page on screen while the `data` function runs. Inline spinners via `<Route>` show on the clicked element. |
 | `"immediate"` | Switches to the new route immediately with `status: "loading"` so you can render skeletons. Escape restores the previous route from the preserved `<Activity>`. |
 
-When deploying to a sub-path (e.g. `https://example.com/my-app/`), pass `base` so the router strips the prefix before matching &mdash; route patterns stay root-relative. With Vite, use `import.meta.env.BASE_URL` to keep it in sync with your config:
+
+## Base Path
+
+When deploying to a sub-path (e.g. `https://example.com/my-app/`), pass `base` to `<router.Router>` so the router strips the prefix before matching &mdash; route patterns stay root-relative. The base is also baked into every `context.url.X(...)` builder so call sites never need to remember to prefix manually:
 
 ```tsx
-<Router routes={routes} base={import.meta.env.BASE_URL} />
+<router.Router base={import.meta.env.BASE_URL} />
 ```
 
-Use `useRouter()` for navigation status and the base-aware URL builder:
-
 ```tsx
-const router = useRouter();
-
-router.status
-router.url(urls.user, { id: 42 })
+function Link() {
+  const context = router.useContext();
+  // with base="/app", builders return base-prefixed paths automatically
+  return <a href={context.url.user({ id: 42 })}>User 42</a>; // "/app/users/42"
+}
 ```
 
 
@@ -248,25 +333,28 @@ router.url(urls.user, { id: 42 })
 
 ```tsx
 function Contact() {
-  const router = useRouter();
+  const context = router.useContext();
 
   return (
     <>
       <nav>
-        <Route href={router.url(urls.home)}>
-          {route => <a href={route.href} className={route.active ? "active" : ""}>Home</a>}
+        <Route href={context.url.home()}>
+          {(state) => <a href={state.href} className={state.active ? "active" : ""}>Home</a>}
         </Route>
-        <Route href={router.url(urls.contact, { method: "email" })} active={path => path.startsWith("/contact")}>
-          {route => <a href={route.href} className={route.active ? "active" : ""}>Contact</a>}
+        <Route
+          href={context.url.contact({ method: "email" })}
+          active={(path) => path.startsWith("/contact")}
+        >
+          {(state) => <a href={state.href} className={state.active ? "active" : ""}>Contact</a>}
         </Route>
       </nav>
 
       <nav>
-        <Route href={router.url(urls.contact, { method: "email" })}>
-          {route => <a href={route.href} className={route.active ? "active" : ""}>Email</a>}
+        <Route href={context.url.contact({ method: "email" })}>
+          {(state) => <a href={state.href} className={state.active ? "active" : ""}>Email</a>}
         </Route>
-        <Route href={router.url(urls.contact, { method: "telephone" })}>
-          {route => <a href={route.href} className={route.active ? "active" : ""}>Telephone</a>}
+        <Route href={context.url.contact({ method: "telephone" })}>
+          {(state) => <a href={state.href} className={state.active ? "active" : ""}>Telephone</a>}
         </Route>
       </nav>
     </>
@@ -277,3 +365,94 @@ function Contact() {
 The top-level "Contact" link uses a custom `active` predicate so it stays highlighted regardless of which sub-tab is selected. Each nested `<Route>` uses the default exact match.
 
 
+## Multi-App / Shared Components
+
+In a monorepo where multiple apps share React components, those components can't import a single `router` definition &mdash; each app declares its own `Routes` enum. Use `shared.useContext<U>()` and pass the **union of `typeof Routes`** as the generic:
+
+```tsx
+// apps/web/router.ts
+import { Router, route } from "react-wayfinder";
+
+export enum Routes {
+  Home = "/",
+  Dashboard = "/dashboard",
+}
+
+export const router = Router([
+  route({ name: "home", url: Routes.Home, match: () => /* ... */ null }),
+  route({ name: "dashboard", url: Routes.Dashboard, match: () => /* ... */ null }),
+]);
+```
+
+```tsx
+// apps/mobile/router.ts — symmetrical, different routes
+export enum Routes {
+  Home = "/",
+  Profile = "/profile",
+}
+```
+
+```tsx
+// shared/header.tsx — works under any host
+import { shared } from "react-wayfinder";
+import * as web from "@app/web/router";
+import * as mobile from "@app/mobile/router";
+
+type AnyRoutes = typeof web.Routes | typeof mobile.Routes;
+
+export function Header() {
+  const context = shared.useContext<AnyRoutes>();
+  return <a href={context.url.home()}>Home</a>; // present in both arms — no narrowing needed
+}
+```
+
+### Narrowing with `is*App` type guards
+
+When a shared component needs to render app-specific links, write a type guard per host and let TypeScript narrow the routes union to a single arm. The guard inspects the runtime handle and returns a `context is Router<typeof web.Routes>` predicate &mdash; everything inside the `if` block then sees one concrete set of routes:
+
+```tsx
+import type { Router } from "react-wayfinder";
+import * as web from "@app/web/router";
+import * as mobile from "@app/mobile/router";
+
+type AnyRoutes = typeof web.Routes | typeof mobile.Routes;
+
+// `Dashboard` only exists on the web app — that's our discriminator
+function isWebApp(context: Router<AnyRoutes>): context is Router<typeof web.Routes> {
+  return "dashboard" in context.url;
+}
+
+function isMobileApp(context: Router<AnyRoutes>): context is Router<typeof mobile.Routes> {
+  return "profile" in context.url;
+}
+
+export function ContextLink() {
+  const context = shared.useContext<AnyRoutes>();
+
+  if (isWebApp(context)) {
+    // narrowed to Router<typeof web.Routes>
+    return <a href={context.url.dashboard()}>Dashboard</a>;
+  }
+
+  if (isMobileApp(context)) {
+    return <a href={context.url.profile()}>Profile</a>;
+  }
+
+  return null;
+}
+```
+
+For the **same key with different params** across apps, every builder also carries its source pattern on `.pattern`. Compare the literal inside an `is*App` guard to keep the narrowing centralised:
+
+```tsx
+enum SoloRoutes { User = "/users/:id" }
+enum TeamRoutes { User = "/teams/:tid/users/:uid" }
+
+function isSoloApp(
+  context: Router<typeof SoloRoutes | typeof TeamRoutes>,
+): context is Router<typeof SoloRoutes> {
+  return context.url.user.pattern === "/users/:id";
+}
+```
+
+Reach for `shared.useContext` **only** when a component must support more than one host. Single-app code should stick with `router.useContext()` &mdash; the routes are captured automatically and the call site is one generic shorter.

@@ -34,27 +34,29 @@ export type ParamsFor<T extends string> = string extends T
 export type Params = Record<string, string>;
 
 /**
- * Internal: shape of the raw `urls` map accepted by {@link App} — a record
- * of name → URL pattern string (e.g. `{ user: "/users/:id" }`). Not exported
- * from the public surface; users author this map inline in `App({ urls })`
- * and read the *built* form via `app.urls` / `router.urls`.
+ * Shape of the `Urls` type passed to `Router<Urls>(routes)` — a record of
+ * name → URL pattern string (e.g. `{ user: "/users/:id" }`). Declared as a
+ * type only; the same names appear on each route's `name` field at the
+ * call site so the runtime can build `router.url[name](params)` builders
+ * without a separate runtime urls map.
  */
-export type UrlsShape = Record<string, string>;
+export type RoutesShape = Record<string, string>;
 
 /**
  * A callable URL builder. Given a `:param`-segment pattern `T`, the builder
  * is a function that takes the typed params and returns the substituted
- * pathname. Patterns with no params are zero-arg.
+ * pathname (with the Router's `base` prefixed). Patterns with no params are
+ * zero-arg.
  *
- * Each builder carries its source `pattern` literal as a property, so route
- * definitions can reference `app.urls.user.pattern` without re-typing the
- * string.
+ * Each builder carries its source `pattern` literal as a property so
+ * shared/cross-app components can discriminate between same-key/different-
+ * params variants via `if (router.url.user.pattern === "/users/:id")`.
  *
  * @example
  * ```ts
- * app.urls.home();               // "/"
- * app.urls.user({ id: 42 });     // "/users/42"
- * app.urls.user.pattern;         // "/users/:id"
+ * router.url.home();               // "/"
+ * router.url.user({ id: 42 });     // "/users/42"
+ * router.url.user.pattern;         // "/users/:id"
  * ```
  */
 export type UrlBuilder<T extends string> = ([ExtractParams<T>] extends [never]
@@ -64,16 +66,44 @@ export type UrlBuilder<T extends string> = ([ExtractParams<T>] extends [never]
 };
 
 /**
- * Built form of an {@link App}'s urls — every entry in the source pattern
- * map transformed into a typed {@link UrlBuilder}.
+ * Built form of a {@link RoutesShape} — every entry transformed into a typed
+ * {@link UrlBuilder}. Surfaced via `router.url` on the handle returned by
+ * `router.useContext()` and `shared.useContext<U>()`.
  *
- * `app.urls` and `router.urls` both have this shape.
+ * Mapped types distribute over unions, so `AppRoutes<U1 | U2>` becomes
+ * `AppRoutes<U1> | AppRoutes<U2>`. That's what makes `'key' in router.url`
+ * narrowing work for `shared.useContext<U1 | U2>()`.
  */
-export type AppUrls<U extends UrlsShape> = {
-  readonly [K in keyof U]: UrlBuilder<U[K]>;
-};
+export type AppRoutes<U extends RoutesShape> = U extends RoutesShape
+  ? {
+      readonly [K in keyof U]: UrlBuilder<U[K]>;
+    }
+  : never;
 
-/** Arguments passed to a route's {@link PathWithData.data | data} function. */
+/**
+ * Active-route params surfaced on the handle via `router.params.X`. Mirrors
+ * {@link AppRoutes} but each entry is the typed params object for that
+ * route's URL pattern, or `undefined` when that route isn't the currently
+ * active match.
+ *
+ * @example
+ * ```ts
+ * const context = router.useContext();
+ * const params = context.params.user;   // { id: string } | undefined
+ * if (params) return <h1>User #{params.id}</h1>;
+ * ```
+ */
+export type AppParams<U extends RoutesShape> = U extends RoutesShape
+  ? {
+      readonly [K in keyof U]: ParamsFor<U[K]> | undefined;
+    }
+  : never;
+
+/**
+ * Arguments passed to a route's `data` function.
+ *
+ * @typeParam T - URL pattern literal — drives the typed `params` field.
+ */
 export type DataArgs<T extends string = string> = {
   /** Typed URL parameters extracted from the matched pattern. */
   params: ParamsFor<T>;
@@ -100,74 +130,102 @@ export type RouteEntry = {
   status: "loading" | "ready" | "error";
 };
 
-type DataFn<T extends string> = (args: DataArgs<T>) => unknown;
-
 /**
- * Router handle passed to `match` and `redirect` — the same shape as `useRouter()`.
+ * Router handle passed to `match` and `redirect` — the same shape returned
+ * by `router.useContext()` and `shared.useContext<U>()`.
  *
- * @typeParam U - The url-pattern map passed to {@link App}. Pin via
- *   `app.useRouter()` (auto) or `shared.useRouter<typeof someApp>()`
+ * @typeParam U - The url-pattern map declared as the `Urls` type passed to
+ *   `Router<Urls>(...)`. Pin via `router.useContext()` (auto) or
+ *   `shared.useContext<typeof urls>()` / `useRouter<typeof urls>()`
  *   (generic at call site, for cross-app code).
  *
- * `urls` is typed as the built {@link AppUrls} form — each entry is a
- * callable builder. Read it directly when you only need a built path,
- * or wrap with `router.url(...)` to prefix the {@link RouterProps.base}.
+ * `url` is typed as the built {@link AppRoutes} form — each entry is a
+ * callable builder that returns the base-prefixed pathname. Call
+ * `router.url.X(params)` directly when constructing hrefs or passing into
+ * `router.navigate.push(...)`.
  */
-export type Router<U extends UrlsShape = UrlsShape> = {
+export type Router<U extends RoutesShape = RoutesShape> = {
   status: NavigationStatus;
-  url: Url;
+  url: AppRoutes<U>;
+  params: AppParams<U>;
   navigate: Navigate;
-  /** Callable URL builders for the enclosing {@link App}'s urls. */
-  urls: AppUrls<U>;
+};
+
+/** Component args for a route without a `data` function. */
+export type StaticMatchArgs<T extends string> = {
+  params: ParamsFor<T>;
+  router: Router;
+  url: URL;
 };
 
 /**
- * A route definition with an async `data` function.
- * The `data` function's return type flows into the `match` argument's `data` field.
+ * Discriminated component args for a route *with* a `data` function.
+ * Destructure `{ status, params, data, error }` at the top and branch
+ * on `status` — TypeScript narrows the sibling `data` / `error` fields
+ * to match (TS 5.4+ correlated-narrowing).
  *
- * @typeParam T - URL pattern literal (e.g. `"/users/:id"`)
- * @typeParam D - `data` function type, inferred automatically
+ * - `"loading"` — the fetch is in flight; `data` and `error` are both
+ *   `undefined`.
+ * - `"ready"` — the fetch resolved; `data` is the typed payload, `error`
+ *   is `undefined`.
+ * - `"error"` — the fetch rejected; `error` is the `Error`, `data` is
+ *   `undefined`.
  */
-/** Discriminated union for `match` args when a `data` function is present. */
-export type DataComponentArgs<T extends string, D> =
+export type DataMatchArgs<T extends string, D = unknown> =
   | {
       params: ParamsFor<T>;
       router: Router;
-      status: "loading";
-      data: undefined;
-      error: undefined;
       url: URL;
+      status: "loading";
+      data?: undefined;
+      error?: undefined;
     }
   | {
       params: ParamsFor<T>;
       router: Router;
+      url: URL;
       status: "ready";
       data: D;
-      error: undefined;
-      url: URL;
+      error?: undefined;
     }
   | {
       params: ParamsFor<T>;
       router: Router;
-      status: "error";
-      data: undefined;
-      error: Error;
       url: URL;
+      status: "error";
+      data?: undefined;
+      error: Error;
     };
 
+/** Function type for a route's `data` fetcher. */
+type DataFn<T extends string> = (args: DataArgs<T>) => unknown;
+
+/**
+ * A route definition with an async `data` function. The `data` function's
+ * return type flows into the `match` argument's `data` field via
+ * `Awaited<ReturnType<D>>`.
+ *
+ * @typeParam T - URL pattern literal (e.g. `"/users/:id"`)
+ * @typeParam D - data function type — inferred automatically by {@link route}
+ */
 export type PathWithData<
   T extends string = string,
   D extends DataFn<T> = DataFn<T>,
+  K extends string = string,
 > = {
-  /** URL pattern (e.g. `"/users/:id"`) — pass a literal string or an `app.urls.X` builder. */
-  url: T | UrlBuilder<T>;
-  /** Async data fetcher — its return type is passed as `data` to `match`. */
+  /** URL pattern literal — must match the key in `Urls` this route binds to via `name`. */
+  url: T;
+  /** URL-name — a key of the `Urls` shape `Routes()` infers from the entries array. */
+  name?: K;
+  /** Async data fetcher — its return type flows into `args.data` inside `match`'s `"ready"` case. */
   data: D;
-  /** Render function called with `"loading"`, `"ready"`, or `"error"` status. Narrow `data` via `status`. */
-  match: (
-    args: DataComponentArgs<T, Awaited<ReturnType<D>>>,
-  ) => React.ReactNode;
-  redirect?: undefined;
+  /**
+   * Single render function that receives a discriminated union keyed on
+   * `status`. Destructure `{ status, params, ... }` at the top, then
+   * switch on `status` and read `args.data` / `args.error` inside the
+   * matching case so TS keeps the discriminant correlation.
+   */
+  match?: (args: DataMatchArgs<T, Awaited<ReturnType<D>>>) => React.ReactNode;
 };
 
 /**
@@ -175,133 +233,142 @@ export type PathWithData<
  *
  * @typeParam T - URL pattern literal (e.g. `"/about"`)
  */
-export type PathWithoutData<T extends string = string> = {
-  /** URL pattern (e.g. `"/about"`) — pass a literal string or an `app.urls.X` builder. */
-  url: T | UrlBuilder<T>;
+export type PathWithoutData<
+  T extends string = string,
+  K extends string = string,
+> = {
+  /** URL pattern literal — the same string declared on the corresponding `Urls[name]`. */
+  url: T;
+  /** URL-name. Must be a key of the `Urls` type passed to `Router<Urls>(...)`. */
+  name?: K;
   /** Render function receiving typed `params`, `url`, and the `router` handle. */
-  match: (args: {
-    params: ParamsFor<T>;
-    router: Router;
-    url: URL;
-  }) => React.ReactNode;
-  data?: undefined;
-  redirect?: undefined;
-};
-
-/** Arguments passed to a `redirect` callback. */
-export type RedirectArgs<T extends string = string> = {
-  params: ParamsFor<T>;
-  router: Router;
-  url: URL;
-};
-
-/**
- * A redirect-only route. Resolves to a target href and replaces the current
- * history entry — no component is rendered.
- *
- * @typeParam T - URL pattern literal
- */
-export type PathWithRedirect<T extends string = string> = {
-  /** URL pattern (e.g. `"/login"`) — pass a literal string or an `app.urls.X` builder. */
-  url: T | UrlBuilder<T>;
-  /** Target href (string) or callback returning the target href. Always replaces the current history entry. */
-  redirect: string | ((args: RedirectArgs<T>) => string);
-  match?: undefined;
+  match: (args: StaticMatchArgs<T>) => React.ReactNode;
   data?: undefined;
 };
 
-/** Component args for a route without a `data` function. */
-type StaticComponentArgs = {
-  params: Params;
-  router: Router;
-  url: URL;
-};
-
-/** Component args for a route with a `data` function. */
-type LoadedComponentArgs = DataComponentArgs<string, unknown>;
-
-/** Type-erased route used internally by the {@link Router}. */
+/** Type-erased route used internally by the router. */
 export type Path = {
   url: string;
-  match?: (args: StaticComponentArgs | LoadedComponentArgs) => React.ReactNode;
+  name?: string;
+  match?: (
+    args: StaticMatchArgs<string> | DataMatchArgs<string>,
+  ) => React.ReactNode;
   data?: (args: DataArgs) => unknown;
-  redirect?: string | ((args: RedirectArgs) => string);
 };
-
-/** Array of route definitions — use with `satisfies Routes` for type-safe route configs. */
-export type Routes = Path[];
 
 /** Controls how the Router transitions between routes that fetch data. */
 export type RouterMode = "immediate" | "deferred";
 
-/**
- * Props for the {@link Router} component.
- *
- * @typeParam U - The source url-pattern map. Normally you don't mount
- *   `<Router>` directly — use `<app.Router>` from {@link App} which threads
- *   `urls` through automatically.
- */
-export type RouterProps<U extends UrlsShape = UrlsShape> = {
-  /** Array of route definitions created with {@link route}. */
-  routes: Path[];
+/** Props for the per-definition `<routes.Router>` component. */
+export type BoundRouterProps = {
   /** @default "deferred" */
   mode?: RouterMode;
   /** Base path prefix stripped before matching (e.g. `"/ReactWayfinder"`). @default "" */
   base?: string;
-  /**
-   * Pre-built URL builders for this app — supplied automatically by
-   * `<app.Router>` from {@link App}. Made available to descendants so
-   * `useRouter().urls.X(params)` resolves at any depth.
-   */
-  urls?: AppUrls<U>;
   /** Persistent elements rendered alongside matched routes (e.g. progress bars). */
   children?: React.ReactNode;
 };
 
 /**
- * Base-path prefixer. Accepts a built pathname and returns it with the
- * Router's {@link RouterProps.base} prepended. Does not trigger navigation.
+ * Definition returned by {@link Routes}. Mount via `<routes.Router>` (the
+ * component is pre-bound to this definition) and call `.useContext()`
+ * from inside the tree to read the navigation handle.
  *
- * URL building has moved onto the callable {@link UrlBuilder | builders}
- * exposed via `app.urls` / `router.urls`, so this function is purely the
- * base-aware wrapper.
- *
- * @example
- * ```tsx
- * const router = useRouter();
- * <a href={router.url(router.urls.user({ id: 42 }))}>User 42</a>
- * ```
+ * @typeParam U - URL-pattern shape carried through to typed `router.url.X`
+ *   builders on the handle.
  */
-export type Url = (href: string) => string;
+export type RouterDefinition<U extends RoutesShape> = {
+  /** Hook: returns the router handle scoped to this definition's urls. */
+  useContext: () => Router<U>;
+  /** Built url-builders — same object surfaced on the handle. */
+  url: AppRoutes<U>;
+  /** Pre-bound `<Router>` component — no `using` prop needed. */
+  Router: (props: BoundRouterProps) => React.ReactElement;
+  /** @internal — consumed by the bound `<Router>` component. */
+  readonly _routes: Path[];
+  /** @internal — the raw urls map, used to re-build builders with a base prefix. */
+  readonly _urls: U;
+};
 
 /**
- * History action passed to {@link Navigate} — {@link Using.Push}
- * adds a new history entry (the default), {@link Using.Replace}
- * swaps the current one in place.
- */
-export enum Using {
-  Push,
-  Replace,
-}
-
-/**
- * Programmatic navigation — same first argument as `<a href>`: a built
- * href string. The optional second argument selects the history action
- * (defaults to {@link Using.Push}); pass {@link Using.Replace} to swap
- * the current entry.
- *
- * Build the href via `app.urls.X(...)` before passing it in.
+ * Type-level extractor — given a {@link RouterDefinition}, returns the
+ * URL-pattern shape declared as its `Urls` generic. Use it to re-export
+ * an `Urls` type from each app for `shared.useContext<U>()` consumers
+ * without restating the urls map.
  *
  * @example
  * ```ts
- * router.navigate("/about");
- * router.navigate("/sign-in", Using.Replace);
- * router.navigate(app.urls.home());
- * router.navigate(app.urls.user({ id: 42 }));
- * router.navigate(app.urls.user({ id: 42 }), Using.Replace);
+ * import { routes } from "./routes";
+ * export type Urls = RoutesOf<typeof routes>;
  * ```
  */
-export type Navigate = (href: string, using?: Using) => void;
+export type RoutesOf<R> = R extends RouterDefinition<infer U> ? U : never;
+
+/**
+ * @internal
+ * Infers the urls-shape from a tuple of {@link route} entries. Named
+ * routes (those with a `name` field) contribute one entry each; anonymous
+ * routes (wildcards, untracked redirects) are skipped.
+ */
+type NameOf<E> = E extends { name?: infer K }
+  ? K extends string
+    ? K
+    : never
+  : never;
+
+export type InferRoutes<Entries extends readonly unknown[]> = {
+  -readonly [E in Entries[number] as NameOf<E>]: E extends {
+    url: infer T extends string;
+  }
+    ? T
+    : never;
+};
+
+/**
+ * Props for the {@link Router} component.
+ *
+ * @typeParam U - URL-pattern shape carried in from the `using` definition.
+ */
+export type RouterProps<U extends RoutesShape = RoutesShape> = {
+  /** The {@link RouterDefinition} returned by {@link Routes}. */
+  using: RouterDefinition<U>;
+  /** @default "deferred" */
+  mode?: RouterMode;
+  /** Base path prefix stripped before matching (e.g. `"/ReactWayfinder"`). @default "" */
+  base?: string;
+  /** Persistent elements rendered alongside matched routes (e.g. progress bars). */
+  children?: React.ReactNode;
+};
+
+/**
+ * Programmatic-navigation helpers on the router handle. Methods take a
+ * pre-built href (use the `router.url.X(...)` builders) and dispatch
+ * through the Navigation API.
+ *
+ * @example
+ * ```ts
+ * router.navigate.push(router.url.user({ id: 42 }));
+ * router.navigate.replace(router.url.signIn());
+ * router.navigate.back();
+ * router.navigate.forward();
+ * ```
+ */
+export type Navigate = {
+  /** Push a new history entry. */
+  push: (href: string) => void;
+  /** Replace the current history entry in place. */
+  replace: (href: string) => void;
+  /** Traverse one entry back, equivalent to the browser back button. */
+  back: () => void;
+  /** Traverse one entry forward. */
+  forward: () => void;
+  /**
+   * Re-evaluate the current route's `data` function. Triggers a
+   * Navigation-API reload, which dispatches a `navigate` event at the
+   * current URL and re-runs the matched route's data fetcher.
+   */
+  reload: () => void;
+};
 
 /** Current navigation status — `"idle"` or `"navigating"` while a `data` function is running. */
 export type NavigationStatus = "idle" | "navigating";
@@ -316,7 +383,8 @@ export type RouterContext = {
   pathname: string | null;
   navigationId: number;
   base: string;
-  urls: AppUrls<UrlsShape> | undefined;
+  url: AppRoutes<RoutesShape> | undefined;
+  params: AppParams<RoutesShape> | undefined;
 };
 
 /** State provided to a {@link Route} child render function. */
@@ -327,8 +395,19 @@ export type RouteState = {
   active: boolean;
   /** `true` if a `data` function is running AND this instance was clicked. */
   pending: boolean;
-  /** Attach as `onClick` on non-anchor elements — navigates via the Navigation API and marks this instance as pending. */
+  /**
+   * Attach as `onClick` on non-anchor elements — navigates via the
+   * Navigation API and marks this instance as pending. Uses `replace` if
+   * the parent `<Route>` has `replace` set, otherwise pushes.
+   */
   handler: (event?: React.MouseEvent) => void;
+  /**
+   * Same `push`/`replace`/`back`/`forward` methods as
+   * `router.navigate`, exposed on the render-prop state for when you
+   * want to override the default action without lifting the navigate
+   * handle from `useContext()`.
+   */
+  navigate: Navigate;
 };
 
 /** Render-prop function signature for {@link Route}. */

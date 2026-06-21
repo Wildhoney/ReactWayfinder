@@ -196,3 +196,94 @@ test.describe("immediate mode", () => {
     await expect(page).toHaveURL("/about");
   });
 });
+
+/**
+ * Scroll restoration on the infinite-scroll /feed page.
+ *
+ * Two contracts to verify, in both router modes:
+ *
+ *  1. /feed → scroll to item 30 → click it → /feed/:id → browser BACK button
+ *     should restore /feed with item 30 still visible (scroll preserved by
+ *     the back-traversal path).
+ *  2. /feed → scroll to item 30 → click it → /feed/:id → click "Feed" link in
+ *     the nav (forward navigation, not back) should scroll to top so item 1
+ *     is visible.
+ */
+test.describe("feed scroll restoration", () => {
+  /**
+   * Scrolls the feed list until "Post #30" is rendered (triggering the
+   * IntersectionObserver to load the second page of items), then brings
+   * it into view so the user-visible position is at item 30.
+   */
+  async function scrollFeedToItem30(page: Page) {
+    // First page renders 20 items; need to scroll near the bottom so the
+    // IntersectionObserver loads page 2 (which contains item 30).
+    while ((await page.locator('a:has-text("Post #30")').count()) === 0) {
+      await page.mouse.wheel(0, 2000);
+      await page.waitForTimeout(150);
+    }
+    await page
+      .locator('a:has-text("Post #30")')
+      .first()
+      .scrollIntoViewIfNeeded();
+  }
+
+  for (const mode of ["deferred", "immediate"] as const) {
+    test.describe(`${mode} mode`, () => {
+      test("back button restores scroll position to item 30", async ({
+        page,
+      }) => {
+        await page.goto("/feed");
+        if (mode === "immediate") {
+          await page.selectOption("select", "immediate");
+        }
+
+        await scrollFeedToItem30(page);
+        await expect(
+          page.locator('a:has-text("Post #30")').first(),
+        ).toBeInViewport();
+
+        await page.locator('a:has-text("Post #30")').first().click();
+        await expect(page).toHaveURL(/\/feed\/30$/);
+        await expect(heading(page)).toHaveText("Post #30", { timeout: 10_000 });
+
+        await page.goBack();
+        await expect(page).toHaveURL("/feed");
+
+        // The Activity preserves the loaded items + scroll position, so
+        // item 30 should still be in the viewport after a back-traversal.
+        await expect(
+          page.locator('a:has-text("Post #30")').first(),
+        ).toBeInViewport({ timeout: 5_000 });
+      });
+
+      test("clicking 'Feed' in the nav resets scroll to item 1", async ({
+        page,
+      }) => {
+        await page.goto("/feed");
+        if (mode === "immediate") {
+          await page.selectOption("select", "immediate");
+        }
+
+        await scrollFeedToItem30(page);
+        await page.locator('a:has-text("Post #30")').first().click();
+        await expect(page).toHaveURL(/\/feed\/30$/);
+        // Wait for the post-detail page to fully render so the subsequent
+        // nav click isn't competing with an in-flight data fetch.
+        await expect(heading(page)).toHaveText("Post #30", { timeout: 10_000 });
+
+        // Forward navigation back to /feed via the nav link — not a history
+        // back-traversal. Should scroll to top (item 1 visible, item 30 not).
+        await link(page, "Feed").click();
+        await expect(page).toHaveURL("/feed");
+
+        await expect(
+          page.locator('a:has-text("Post #1")').first(),
+        ).toBeInViewport({ timeout: 5_000 });
+        await expect(
+          page.locator('a:has-text("Post #30")').first(),
+        ).not.toBeInViewport();
+      });
+    });
+  }
+});

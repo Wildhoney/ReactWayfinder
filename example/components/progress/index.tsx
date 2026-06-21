@@ -1,11 +1,11 @@
 import { useState, useEffect, type ReactElement } from "react";
 import { useNProgress } from "@tanem/react-nprogress";
-import { useRouter } from "react-wayfinder";
+import { router } from "../../utils";
 import { Container, Bar, Peg } from "./styles";
 
 /** Top-of-page progress bar that animates while any navigation's `data` function is running. */
 export default function Progress(): ReactElement {
-  const router = useRouter();
+  const context = router.useContext();
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -13,7 +13,7 @@ export default function Progress(): ReactElement {
   }, []);
 
   const { animationDuration, isFinished, progress } = useNProgress({
-    isAnimating: mounted && router.status === "navigating",
+    isAnimating: mounted && context.status === "navigating",
   });
 
   return (

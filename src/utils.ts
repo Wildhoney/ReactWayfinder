@@ -1,10 +1,10 @@
 import type {
-  AppUrls,
+  AppRoutes,
   Params,
   Path,
   RouteMatch,
   UrlBuilder,
-  UrlsShape,
+  RoutesShape,
 } from "./types";
 
 /**
@@ -127,40 +127,44 @@ export function buildUrl(
 
 /**
  * Wraps a single URL pattern as a callable {@link UrlBuilder} with the
- * source `pattern` literal attached as a property.
+ * source `pattern` literal attached as a property. When `base` is
+ * provided, the builder returns the base-prefixed pathname so call sites
+ * can pass the result straight into `<a href>` or `router.navigate()`.
  */
-function makeBuilder<T extends string>(pattern: T): UrlBuilder<T> {
-  const builder = (params?: Record<string, string | number>) =>
-    params ? buildUrl(pattern, params) : pattern;
+function makeBuilder<T extends string>(pattern: T, base: string): UrlBuilder<T> {
+  const builder = (params?: Record<string, string | number>) => {
+    const path = params ? buildUrl(pattern, params) : pattern;
+    return base ? prefixBase(path, base) : path;
+  };
   return Object.assign(builder, { pattern }) as UrlBuilder<T>;
 }
 
 /**
- * Transforms a raw url-pattern map (the value passed to `App({ urls })`)
- * into the built {@link AppUrls} form — every entry becomes a callable
+ * Transforms a raw url-pattern map (the value passed to `Router({ urls })`)
+ * into the built {@link AppRoutes} form — every entry becomes a callable
  * builder. Each builder retains its source pattern via `.pattern`.
+ *
+ * Pass `base` to bake the Router's base prefix into every builder result
+ * so call sites get a ready-to-use href in one call.
  *
  * @example
  * ```ts
- * const urls = makeUrls({ home: "/", user: "/users/:id" });
- * urls.home();             // "/"
- * urls.user({ id: 42 });   // "/users/42"
- * urls.user.pattern;       // "/users/:id"
+ * const url = makeUrls({ home: "/", user: "/users/:id" });
+ * url.home();             // "/"
+ * url.user({ id: 42 });   // "/users/42"
+ * url.user.pattern;       // "/users/:id"
+ *
+ * const based = makeUrls({ home: "/" }, "/app");
+ * based.home();           // "/app/"
  * ```
  */
-export function makeUrls<U extends UrlsShape>(urls: U): AppUrls<U> {
+export function makeUrls<U extends RoutesShape>(
+  urls: U,
+  base = "",
+): AppRoutes<U> {
   const result: Record<string, UrlBuilder<string>> = {};
   for (const key in urls) {
-    result[key] = makeBuilder(urls[key]) as UrlBuilder<string>;
+    result[key] = makeBuilder(urls[key], base) as UrlBuilder<string>;
   }
-  return result as AppUrls<U>;
-}
-
-/**
- * Extracts the URL pattern from a value that may be either a literal
- * pattern string or a {@link UrlBuilder}. Used by {@link route} so route
- * definitions can pass `app.urls.X` directly without `.pattern`.
- */
-export function extractPattern(url: string | UrlBuilder<string>): string {
-  return typeof url === "function" ? url.pattern : url;
+  return result as AppRoutes<U>;
 }
