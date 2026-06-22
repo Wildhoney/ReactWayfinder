@@ -111,8 +111,21 @@ export type DataArgs<T extends string = string> = {
   url: URL;
   /** Aborted when the navigation is superseded or cancelled via Escape. */
   signal: AbortSignal;
-  /** Previously cached data for this route, or `undefined` on first visit. */
-  cache: unknown;
+  /**
+   * Generic accessor for the previously-fetched payload (or `undefined`
+   * on first visit). Pass the expected payload type as the generic so
+   * the result lands typed at the call site &mdash; no `as` cast needed.
+   *
+   * @example
+   * ```ts
+   * data: async ({ params, signal, cache }) => {
+   *   const cached = cache<User>();   // User | undefined
+   *   if (cached) return cached;
+   *   return fetchUser(params.id, { signal });
+   * }
+   * ```
+   */
+  cache: <D = unknown>() => D | undefined;
 };
 
 /** Internal representation of a resolved route match. */

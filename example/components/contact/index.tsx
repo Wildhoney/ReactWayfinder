@@ -44,10 +44,7 @@ export default function Contact({
         <h1>Contact</h1>
         <SubNav>
           {methods.map(({ method: value, label }) => (
-            <Route
-              key={value}
-              href={context.url.contact({ method: value })}
-            >
+            <Route key={value} href={context.url.contact({ method: value })}>
               {(route) => (
                 <Tab href={route.href} active={route.active}>
                   {label}

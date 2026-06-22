@@ -131,7 +131,10 @@ export function buildUrl(
  * provided, the builder returns the base-prefixed pathname so call sites
  * can pass the result straight into `<a href>` or `router.navigate()`.
  */
-function makeBuilder<T extends string>(pattern: T, base: string): UrlBuilder<T> {
+function makeBuilder<T extends string>(
+  pattern: T,
+  base: string,
+): UrlBuilder<T> {
   const builder = (params?: Record<string, string | number>) => {
     const path = params ? buildUrl(pattern, params) : pattern;
     return base ? prefixBase(path, base) : path;

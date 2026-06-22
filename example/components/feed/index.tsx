@@ -75,10 +75,7 @@ export default function Feed(): ReactElement {
         </p>
         <List>
           {items.map((item) => (
-            <Route
-              key={item.id}
-              href={context.url.post({ id: item.id })}
-            >
+            <Route key={item.id} href={context.url.post({ id: item.id })}>
               {(route) => (
                 <Item href={route.href}>
                   <Thumbnail hue={item.hue} />

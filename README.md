@@ -66,7 +66,6 @@ export const router = Router([
       if (status === "loading") return <p>Loading&hellip;</p>;
       if (status === "error")   return <p>{error.message}</p>;
       if (status === "ready")   return <User id={params.id} name={data.name} />;
-      return null;
     },
   }),
 ]);

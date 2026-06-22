@@ -42,14 +42,20 @@ export const router = Router([
   route({
     url: "/contact/postal",
     async data({ signal, cache }) {
-      if (cache) return cache as { address: string };
+      const cached = cache<{ address: string }>();
+      if (cached) return cached;
       await sleep(500 + Math.random() * 500, signal);
       return { address: "42 Wayfinder Lane, London, EC1A 1BB, United Kingdom" };
     },
     match({ status, error, data }) {
-      if (status === "loading") return <Contact method="postal" status="loading" />;
-      if (error) return <Contact method="postal" status="error" error={error} />;
-      if (data) return <Contact method="postal" status="ready" address={data.address} />;
+      if (status === "loading")
+        return <Contact method="postal" status="loading" />;
+      if (status === "error")
+        return <Contact method="postal" status="error" error={error} />;
+      if (status === "ready")
+        return (
+          <Contact method="postal" status="ready" address={data.address} />
+        );
       return null;
     },
   }),
@@ -57,7 +63,8 @@ export const router = Router([
     name: "contact",
     url: "/contact/:method",
     match({ params }) {
-      return <Contact method={params.method as "email" | "telephone"} />;
+      if (!isContactMethod(params.method)) return <NotFound />;
+      return <Contact method={params.method} />;
     },
   }),
   route({
@@ -71,14 +78,15 @@ export const router = Router([
     name: "post",
     url: "/feed/:id",
     async data({ params, signal, cache }) {
-      if (cache) return cache as { title: string };
+      const cached = cache<{ title: string }>();
+      if (cached) return cached;
       await sleep(500 + Math.random() * 500, signal);
       return { title: `Post #${params.id}` };
     },
     match({ status, params, data, error }) {
       if (status === "loading") return <PostSkeleton />;
-      if (error) return <p>Error: {error.message}</p>;
-      if (data) return <Post id={params.id} title={data.title} />;
+      if (status === "error") return <p>Error: {error.message}</p>;
+      if (status === "ready") return <Post id={params.id} title={data.title} />;
       return null;
     },
   }),
@@ -86,7 +94,8 @@ export const router = Router([
     name: "user",
     url: "/users/:id",
     async data({ params, signal, cache }) {
-      if (cache) return cache as { name: string; email: string };
+      const cached = cache<{ name: string; email: string }>();
+      if (cached) return cached;
       await sleep(500 + Math.random() * 500, signal);
       return {
         name: `User ${params.id}`,
@@ -95,8 +104,9 @@ export const router = Router([
     },
     match({ status, params, data, error }) {
       if (status === "loading") return <UserSkeleton />;
-      if (error) return <p>Error: {error.message}</p>;
-      if (data) return <UserRoute id={params.id} name={data.name} email={data.email} />;
+      if (status === "error") return <p>Error: {error.message}</p>;
+      if (status === "ready")
+        return <UserRoute id={params.id} name={data.name} email={data.email} />;
       return null;
     },
   }),
@@ -110,6 +120,11 @@ export const router = Router([
 
 /** Re-exported url-pattern shape — usable by cross-app shared components via `shared.useContext<Urls>()`. */
 export type Routes = RoutesOf<typeof router>;
+
+/** Narrows the raw `:method` url param to the closed set of known contact methods. */
+function isContactMethod(value: string): value is "email" | "telephone" {
+  return value === "email" || value === "telephone";
+}
 
 /** Returns a promise that resolves after {@link ms} milliseconds, or rejects if {@link signal} is aborted. */
 function sleep(ms: number, signal: AbortSignal) {

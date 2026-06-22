@@ -285,9 +285,13 @@ function MountRouter<U extends RoutesShape>({
   const previousPathname = useRef<string | null>(null);
   const scrollPositions = useRef<Map<string, number>>(new Map());
 
-  const activeEntry = currentPathname ? visited.get(currentPathname) : undefined;
+  const activeEntry = currentPathname
+    ? visited.get(currentPathname)
+    : undefined;
 
-  const params = useMemo<Record<string, Record<string, string> | undefined>>(() => {
+  const params = useMemo<
+    Record<string, Record<string, string> | undefined>
+  >(() => {
     const out: Record<string, Record<string, string> | undefined> = {};
     for (const name of Object.keys(rawUrls)) {
       out[name] = undefined;
@@ -384,10 +388,7 @@ function MountRouter<U extends RoutesShape>({
           // pathname has already moved on and saves the new route's scroll
           // under the wrong key, breaking back-traversal restore.
           if (activePathname.current) {
-            scrollPositions.current.set(
-              activePathname.current,
-              window.scrollY,
-            );
+            scrollPositions.current.set(activePathname.current, window.scrollY);
           }
           setVisited((previous) => {
             const next = new Map(previous);
@@ -407,7 +408,9 @@ function MountRouter<U extends RoutesShape>({
             params: nextMatch.params,
             url: nextMatch.url,
             signal: controller.signal,
-            cache,
+            // Generic accessor — the data fn supplies the expected type at
+            // the call site (`cache<User>()`), so no `as` cast is needed.
+            cache: <D,>() => cache as D | undefined,
           });
 
           if (controller.signal.aborted) return;
@@ -582,16 +585,14 @@ export function route<
   D extends (args: DataArgs<T>) => unknown,
   const K extends string = never,
 >(definition: PathWithData<T, D, K>): PathWithData<T, D, K>;
-export function route<
-  const T extends string,
-  const K extends string = never,
->(definition: PathWithoutData<T, K>): PathWithoutData<T, K>;
+export function route<const T extends string, const K extends string = never>(
+  definition: PathWithoutData<T, K>,
+): PathWithoutData<T, K>;
 export function route(
   definition: PathWithData | PathWithoutData,
 ): PathWithData | PathWithoutData {
   return definition;
 }
-
 
 /**
  * Creates a {@link RouterDefinition} — the per-app entrypoint that owns

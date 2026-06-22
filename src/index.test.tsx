@@ -351,7 +351,9 @@ describe("router.useContext().navigate", () => {
     function Trigger() {
       const context = router.useContext();
       return (
-        <button onClick={() => context.navigate.push(context.url.user({ id: 1 }))}>
+        <button
+          onClick={() => context.navigate.push(context.url.user({ id: 1 }))}
+        >
           Go
         </button>
       );
@@ -417,7 +419,9 @@ describe("router.useContext().navigate", () => {
 
     function Forward() {
       const context = router.useContext();
-      return <button onClick={() => context.navigate.forward()}>Forward</button>;
+      return (
+        <button onClick={() => context.navigate.forward()}>Forward</button>
+      );
     }
 
     render(<router.Router />);
@@ -608,11 +612,10 @@ describe("route() — match auto-typed from url params AND data return", () => {
         url: "/posts/:slug/comments/:cid",
         match({ params }) {
           // params: { slug: string; cid: string }
-          assertExact<
-            typeof params,
-            { slug: string; cid: string }
-          >(true);
-          return <span data-testid="static">{`${params.slug}/${params.cid}`}</span>;
+          assertExact<typeof params, { slug: string; cid: string }>(true);
+          return (
+            <span data-testid="static">{`${params.slug}/${params.cid}`}</span>
+          );
         },
       }),
     ]);
@@ -651,9 +654,7 @@ describe("shared.useContext<U>() — cross-app handle", () => {
     }
 
     render(<router.Router base="/app" />);
-    expect(screen.getByTestId("profile-href").textContent).toBe(
-      "/app/profile",
-    );
+    expect(screen.getByTestId("profile-href").textContent).toBe("/app/profile");
   });
 
   it("narrows via a user-defined is-this-app type guard", () => {
