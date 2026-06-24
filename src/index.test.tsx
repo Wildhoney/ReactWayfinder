@@ -1,15 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, act } from "@testing-library/react";
-import {
-  Router,
-  Route,
-  Redirect,
-  route,
-  shared,
-  useRouter,
-  type RoutesOf,
-  type RoutesShape,
-} from "./index";
+import { Router, Route, Redirect, route, shared, useRouter } from "./index";
+import type { RoutesOf, RoutesShape } from "./types";
 
 // Mock the Navigation API.
 const mockNavigation = {

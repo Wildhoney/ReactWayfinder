@@ -8,7 +8,7 @@ export default defineConfig({
   base: "/Wayfinder/",
   resolve: {
     alias: {
-      "react-wayfinder": resolve(__dirname, "src/index.tsx"),
+      "react-wayfinder": resolve(__dirname, "src/index.ts"),
     },
   },
   build: {

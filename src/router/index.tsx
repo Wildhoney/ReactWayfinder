@@ -1,213 +1,29 @@
 import {
   Activity,
-  createContext,
-  useContext as useReactContext,
-  useState,
-  useEffect,
   useCallback,
+  useEffect,
   useMemo,
   useRef,
+  useState,
   type ReactElement,
 } from "react";
 import { flushSync } from "react-dom";
-import {
-  type Path,
-  type PathWithData,
-  type PathWithoutData,
-  type DataArgs,
-  type RouteMatch,
-  type NavigationDirection,
-  type NavigationStatus,
-  type Navigate,
-  type RouterContext,
-  type Router as Handle,
-  type RouteEntry,
-  type RouteProps,
-  type RouterDefinition,
-  type RouterProps,
-  type RoutesShape,
-  type AppRoutes,
-  type InferRoutes,
-} from "./types";
-import { resolveMatch, stripBase, makeUrls } from "./utils";
-
-const Context = createContext<RouterContext>({
-  status: "idle",
-  destination: null,
-  pathname: null,
-  navigationId: 0,
-  base: "",
-  url: undefined,
-  params: undefined,
-});
-
-const navigate: Navigate = {
-  push: (href) => window.navigation.navigate(href, { history: "auto" }),
-  replace: (href) => window.navigation.navigate(href, { history: "replace" }),
-  back: () => window.navigation.back(),
-  forward: () => window.navigation.forward(),
-  reload: () => window.navigation.reload(),
-};
-
-/**
- * Internal hook — reads the router context and returns a typed handle.
- * Surfaced via `router.useContext()` (auto-typed against the definition's
- * urls) and `useRouter<U>()` / `shared.useContext<U>()` (generic for
- * cross-app code).
- */
-function useRouterContext<U extends RoutesShape = RoutesShape>(): Handle<U> {
-  const context = useReactContext(Context);
-
-  return useMemo(
-    () => ({
-      status: context.status,
-      url: (context.url ?? {}) as AppRoutes<U>,
-      params: (context.params ?? {}) as Handle<U>["params"],
-      navigate,
-    }),
-    [context.status, context.url, context.params],
-  );
-}
-
-/**
- * Standalone counterpart to `router.useContext()` and `shared.useContext()`.
- * Returns the active router's handle, optionally typed against a urls
- * shape passed as a generic.
- *
- * Prefer `router.useContext()` for single-app code (auto-typed from the
- * `Router({ urls })` it was returned from). Reach for `useRouter<U>()`
- * when you want a typed handle without importing a specific `router`
- * &mdash; e.g. inside a UI library that ships components for any host.
- *
- * @example
- * ```tsx
- * import { useRouter } from "react-wayfinder";
- * import type { Urls } from "@app/router";
- *
- * function Header() {
- *   const router = useRouter<Urls>();
- *   return <a href={router.url.home()}>Home</a>;
- * }
- * ```
- */
-export function useRouter<U extends RoutesShape = RoutesShape>(): Handle<U> {
-  return useRouterContext<U>();
-}
-
-/**
- * Render-helper for in-`match` redirects — return it from a route's
- * `match` callback to redirect away from the matched URL. The redirect
- * runs once on mount via `useEffect` and uses `history: "replace"` so
- * the back button skips the redirect source.
- *
- * @example
- * ```tsx
- * route({
- *   url: "/contact",
- *   match: () => <Redirect href="/contact/email" />,
- * })
- * ```
- */
-export function Redirect({ href }: { href: string }): null {
-  useEffect(() => {
-    window.navigation.navigate(href, { history: "replace" });
-  }, [href]);
-  return null;
-}
-
-/**
- * Render-prop component scoped to a single href. Provides `active` and
- * `pending` state so only the element the user clicked shows a spinner
- * while the route's `data` function is running.
- *
- * Pass `replace` to navigate by replacing the current history entry instead
- * of pushing a new one — useful for canonicalisation and login redirects.
- *
- * @example
- * ```tsx
- * <Route href={router.url.user({ id: 1 })}>
- *   {route => (
- *     <a href={route.href}>
- *       User 1 {route.pending ? <Spinner /> : null}
- *     </a>
- *   )}
- * </Route>
- * ```
- */
-export function Route({
-  href,
-  active,
-  replace,
-  children,
-}: RouteProps): ReactElement {
-  const context = useReactContext(Context);
-  const [clickedId, setClickedId] = useState<number | null>(null);
-  const wrapperRef = useRef<HTMLSpanElement>(null);
-  const navigationIdRef = useRef(context.navigationId);
-
-  useEffect(() => {
-    navigationIdRef.current = context.navigationId;
-  }, [context.navigationId]);
-
-  useEffect(() => {
-    const element = wrapperRef.current;
-    if (!element) return;
-
-    const handleClick = (event: MouseEvent) => {
-      if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey)
-        return;
-      setClickedId(navigationIdRef.current + 1);
-
-      if (replace) {
-        event.preventDefault();
-        window.navigation.navigate(href, { history: "replace" });
-      }
-    };
-
-    element.addEventListener("click", handleClick, true);
-    return () => element.removeEventListener("click", handleClick, true);
-  }, [href, replace]);
-
-  const handler = useCallback(
-    (event?: React.MouseEvent) => {
-      if (
-        event &&
-        (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey)
-      ) {
-        return;
-      }
-
-      window.navigation.navigate(href, {
-        history: replace ? "replace" : "auto",
-      });
-    },
-    [href, replace],
-  );
-
-  const pending =
-    clickedId === context.navigationId &&
-    context.status === "navigating" &&
-    context.destination === href;
-
-  const strippedPathname =
-    context.pathname != null ? stripBase(context.pathname, context.base) : null;
-
-  const isActive = active
-    ? strippedPathname != null && active(strippedPathname)
-    : context.pathname === href;
-
-  return (
-    <span ref={wrapperRef} style={{ display: "contents" }}>
-      {children({
-        href,
-        active: isActive,
-        pending,
-        handler,
-        navigate,
-      })}
-    </span>
-  );
-}
+import { Context, navigate, useRouterContext } from "../context";
+import { makeUrls, resolveMatch } from "../utils";
+import type {
+  AppRoutes,
+  InferRoutes,
+  NavigationDirection,
+  NavigationStatus,
+  Path,
+  RouteEntry,
+  RouteMatch,
+  RouterContext,
+  RouterDefinition,
+  RouterProps,
+  Router as Handle,
+  RoutesShape,
+} from "../types";
 
 /**
  * Top-level router component powered by the
@@ -217,7 +33,7 @@ export function Route({
  * The active route is `"visible"`, all others are `"hidden"` — preserving
  * component state, scroll position, and route data without re-fetching.
  *
- * Pass the {@link RouterDefinition} returned by {@link Routes} as the
+ * Pass the {@link RouterDefinition} returned by {@link Router} as the
  * `using` prop; the urls map, routes, and typed handle all flow through
  * automatically.
  *
@@ -227,8 +43,7 @@ export function Route({
  * ```tsx
  * <Router using={routes} mode="deferred" base={import.meta.env.BASE_URL} />
  * ```
- */
-/**
+ *
  * @internal
  * Standalone mount component — not exported from the package. Each
  * {@link Router} definition exposes a bound `router.Router` component
@@ -559,39 +374,16 @@ function MountRouter<U extends RoutesShape>({
 }
 
 /**
- * Define a strongly-typed route. Infers param types from the URL pattern
- * literal and the `data` function's return type for the `data` argument
- * in `match`. Wrap each route literal in `route({ ... })` so the data →
- * match.data flow stays typed.
- *
- * @example
- * ```tsx
- * route({
- *   name: "user",
- *   url: "/users/:id",
- *   async data({ params, signal }) {
- *     return await fetchUser(params.id, { signal });
- *   },
- *   match({ status, params, data }) {
- *     if (status === "loading") return <Skeleton />;
- *     if (status === "error") return <Error />;
- *     return <User id={params.id} name={data.name} />;
- *   },
- * })
- * ```
+ * Build the urls map for a router from the `name`/`url` pair on each
+ * named route. Anonymous routes (no `name` — wildcards, untracked
+ * redirects) are skipped.
  */
-export function route<
-  const T extends string,
-  D extends (args: DataArgs<T>) => unknown,
-  const K extends string = never,
->(definition: PathWithData<T, D, K>): PathWithData<T, D, K>;
-export function route<const T extends string, const K extends string = never>(
-  definition: PathWithoutData<T, K>,
-): PathWithoutData<T, K>;
-export function route(
-  definition: PathWithData | PathWithoutData,
-): PathWithData | PathWithoutData {
-  return definition;
+function buildUrlsFromRoutes(routes: Path[]): RoutesShape {
+  const out: Record<string, string> = {};
+  for (const route of routes) {
+    if (route.name) out[route.name] = route.url;
+  }
+  return out;
 }
 
 /**
@@ -609,9 +401,9 @@ export function route(
  * @example
  * ```tsx
  * // app/routes.ts
- * import { Routes, route } from "react-wayfinder";
+ * import { Router, route } from "react-wayfinder";
  *
- * export const routes = Routes([
+ * export const routes = Router([
  *   route({ name: "home", url: "/", match: () => <Home /> }),
  *   route({
  *     name: "user",
@@ -639,19 +431,6 @@ export function route(
  * router.navigate.push(router.url.home());
  * ```
  */
-/**
- * Build the urls map for a router from the `name`/`url` pair on each
- * named route. Anonymous routes (no `name` — wildcards, untracked
- * redirects) are skipped.
- */
-function buildUrlsFromRoutes(routes: Path[]): RoutesShape {
-  const out: Record<string, string> = {};
-  for (const route of routes) {
-    if (route.name) out[route.name] = route.url;
-  }
-  return out;
-}
-
 export function Router<const Entries extends readonly unknown[]>(
   entries: Entries,
 ): RouterDefinition<InferRoutes<Entries>> {
@@ -674,68 +453,5 @@ export function Router<const Entries extends readonly unknown[]>(
 
   return definition;
 }
-
-/**
- * `shared` namespace — standalone counterparts to the `router.X` hooks
- * returned by {@link Router}. `shared.useContext<U>()` takes one or more
- * url-pattern types as a mandatory generic so reusable components can run
- * under multiple Routers without binding to a single `router` import.
- *
- * Reach for `shared.X` only when a component must support more than one
- * Router. Single-app code should stick with `router.X` — the urls are
- * captured from `router` automatically and the call site is one generic
- * shorter.
- *
- * When the generic is a union, mapped types distribute: `router.url` becomes
- * `AppRoutes<U1> | AppRoutes<U2>`. TypeScript's built-in narrowing then forces
- * the call site to discriminate:
- *
- * - `if ("dashboard" in router.url)` narrows when a key exists in only one app.
- * - `if (router.url.user.pattern === "/users/:id")` narrows when the same
- *   key has different params across apps.
- *
- * | Bound to a Router          | Standalone (`shared.X`)               |
- * | -------------------------- | ------------------------------------- |
- * | `router.useContext()`      | `shared.useContext<typeof urls>()`    |
- *
- * @example
- * ```tsx
- * // shared/types.ts
- * import type { urls as webUrls } from "@app/web";
- * import type { urls as mobileUrls } from "@app/mobile";
- *
- * export type Urls = typeof webUrls | typeof mobileUrls;
- *
- * // shared/components/sign-out.tsx — works under any host
- * import { shared } from "react-wayfinder";
- * import type { Urls } from "@shared/types";
- *
- * export function SignOut() {
- *   const router = shared.useContext<Urls>();
- *   // `signOut` exists on every arm of the union — direct access type-checks
- *   return <a href={router.url.signOut()}>Sign out</a>;
- * }
- * ```
- */
-export const shared = {
-  useContext<U extends RoutesShape>(): Handle<U> {
-    return useRouterContext<U>();
-  },
-};
-
-export type {
-  NavigationDirection,
-  NavigationStatus,
-  RouterContext,
-  RouterMode,
-  BoundRouterProps,
-  Navigate,
-  UrlBuilder,
-  AppRoutes,
-  AppParams,
-  RoutesShape,
-  RoutesOf,
-  RouterDefinition,
-} from "./types";
 
 export type Router<U extends RoutesShape = RoutesShape> = Handle<U>;

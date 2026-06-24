@@ -9,14 +9,14 @@ export default defineConfig(({ command }) => ({
         root: resolve(__dirname, "example"),
         resolve: {
           alias: {
-            "react-wayfinder": resolve(__dirname, "src/index.tsx"),
+            "react-wayfinder": resolve(__dirname, "src/index.ts"),
           },
         },
       }
     : {
         build: {
           lib: {
-            entry: resolve(__dirname, "src/index.tsx"),
+            entry: resolve(__dirname, "src/index.ts"),
             name: "ReactWayfinder",
             fileName: "react-wayfinder",
             formats: ["es", "cjs"],
