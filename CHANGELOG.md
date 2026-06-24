@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [0.3.0](https://github.com/Wildhoney/ReactWayfinder/compare/v0.2.0...v0.3.0) (2026-06-24)
+
+
+### ⚠ BREAKING CHANGES
+
+* split src/index.tsx into per-concept modules; trim public API to README surface
+* redesign around Router(routes) + enum Routes, add router.params, replace redirect: with <Redirect />
+
+* split src/index.tsx into per-concept modules; trim public API to README surface ([9b1b362](https://github.com/Wildhoney/ReactWayfinder/commit/9b1b3627cf74d9342aab537e16c1dcdc9fce9d6c))
+
+
+### Features
+
+* redesign around Router(routes) + enum Routes, add router.params, replace redirect: with <Redirect /> ([022712f](https://github.com/Wildhoney/ReactWayfinder/commit/022712f948f039f457dd44aac45498f781787510))
+
 ## [0.2.0](https://github.com/Wildhoney/ReactWayfinder/compare/v0.1.4...v0.2.0) (2026-06-17)
 
 
