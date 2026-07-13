@@ -10,22 +10,22 @@ Strongly-typed React router built on the [Navigation API](https://web.dev/blog/b
 
 </div>
 
-## Table of Contents
+## Contents
 
-1. [Getting Started](#getting-started)
-2. [Navigation State](#navigation-state)
-3. [Programmatic Navigation](#programmatic-navigation)
+1. [Getting started](#getting-started)
+2. [Navigation state](#navigation-state)
+3. [Programmatic navigation](#programmatic-navigation)
 4. [Redirects](#redirects)
 5. [Cancellation](#cancellation)
 6. [Caching](#caching)
-7. [View Transitions](#view-transitions)
-8. [Router Modes](#router-modes)
-9. [Base Path](#base-path)
-10. [Nested Routes](#nested-routes)
-11. [Multi-App / Shared Components](#multi-app--shared-components)
+7. [View transitions](#view-transitions)
+8. [Router modes](#router-modes)
+9. [Base path](#base-path)
+10. [Nested routes](#nested-routes)
+11. [Shared components](#shared-components)
 
 
-## Getting Started
+## Getting started
 
 Install `react-wayfinder` using your preferred package manager:
 
@@ -89,7 +89,7 @@ function Header() {
 Routes **without** a `data` function pass `params`, `url`, and `router` to `match`. Routes **with** a `data` function receive a discriminated `args` union keyed on `status` &mdash; destructure `{ status, params, data, error }` at the top and branch on `status`. TypeScript narrows the sibling `data` / `error` fields per branch (TS 5.4+ correlated-narrowing), so inside `status === "ready"` the `data` is the typed payload, inside `status === "error"` the `error` is `Error`, and neither is meaningful while `status === "loading"`. Use `"*"` as a catch-all for unmatched routes; anonymous routes (wildcards, untracked redirects) omit `name`.
 
 
-## Navigation State
+## Navigation state
 
 Wrap any navigable element in `<Route>` to get `href`, `active`, `pending`, and `handler`. For `<a>` tags, use `href` &mdash; the Navigation API intercepts the click natively. For `<button>` elements, attach `handler` as `onClick` to navigate via `navigation.navigate()`. Every `<Route>` whose `href` matches the navigation destination shows `pending: true` while a route's `data` function is running:
 
@@ -154,7 +154,7 @@ Pass `replace` to `<Route>` to replace the current history entry instead of push
 ```
 
 
-## Programmatic Navigation
+## Programmatic navigation
 
 `router.useContext()` returns a `navigate` object for navigating outside of a `<Route>`. Each method takes a pre-built href &mdash; pair it with the `url` builders to keep call sites type-safe:
 
@@ -268,7 +268,7 @@ async data({ params, signal, cache }) {
 Previously visited routes are preserved in the DOM using React [`<Activity>`](https://react.dev/reference/react/Activity) &mdash; their component state, scroll position, and form inputs survive navigation. The example app's `/feed` route demonstrates this: scroll down to load more items via the infinite-scroll `data` function, navigate away, then come back &mdash; your scroll position and every loaded item are still there.
 
 
-## View Transitions
+## View transitions
 
 The router automatically wraps route swaps in `document.startViewTransition()` when the browser supports it. It sets `data-direction="forward"` or `data-direction="back"` on `<html>` so you can style direction-aware animations with CSS:
 
@@ -295,7 +295,7 @@ The router automatically wraps route swaps in `document.startViewTransition()` w
 Direction is detected via the Navigation API &mdash; `"back"` when traversing to a lower history index, `"forward"` otherwise. Cancel clears the `data-direction` attribute to prevent unwanted animations.
 
 
-## Router Modes
+## Router modes
 
 The `mode` prop on `<router.Router>` controls how the router transitions between routes that fetch data:
 
@@ -309,7 +309,7 @@ The `mode` prop on `<router.Router>` controls how the router transitions between
 | `"immediate"` | Switches to the new route immediately with `status: "loading"` so you can render skeletons. Escape restores the previous route from the preserved `<Activity>`. |
 
 
-## Base Path
+## Base path
 
 When deploying to a sub-path (e.g. `https://example.com/my-app/`), pass `base` to `<router.Router>` so the router strips the prefix before matching &mdash; route patterns stay root-relative. The base is also baked into every `context.url.X(...)` builder so call sites never need to remember to prefix manually:
 
@@ -326,7 +326,7 @@ function Link() {
 ```
 
 
-## Nested Routes
+## Nested routes
 
 `<Route>` can be nested freely. A top-level navigation bar uses `<Route>` for each link, and the page it renders can nest its own `<Route>` instances for sub-navigation. Each `<Route>` independently tracks `active` and `pending` for its own `href`:
 
@@ -364,7 +364,7 @@ function Contact() {
 The top-level "Contact" link uses a custom `active` predicate so it stays highlighted regardless of which sub-tab is selected. Each nested `<Route>` uses the default exact match.
 
 
-## Multi-App / Shared Components
+## Shared components
 
 In a monorepo where multiple apps share React components, those components can't import a single `router` definition &mdash; each app declares its own `Routes` enum. Use `shared.useContext<U>()` and pass the **union of `typeof Routes`** as the generic:
 
